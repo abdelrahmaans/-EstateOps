@@ -1,0 +1,21 @@
+{
+  "layout": { "brand": "EstateOps", "subtitle": "Real Estate CRM", "sidebar": "Main navigation", "menu": "Open menu", "workspace": "Internal workspace" },
+  "nav": { "dashboard": "Dashboard", "leads": "Leads", "projects": "Projects", "units": "Units", "tasks": "Tasks", "calendar": "Calendar" },
+  "common": { "actions": "Actions", "add": "Add", "edit": "Edit", "save": "Save", "cancel": "Cancel", "filter": "Filter", "empty": "No records found", "loading": "Loading", "none": "None", "unassigned": "Unassigned", "back": "Back to leads", "language": "Change language", "theme": "Change theme", "allStatuses": "All statuses", "allSources": "All sources", "allProjects": "All projects", "allUsers": "All users" },
+  "auth": { "loginTitle": "Sign in", "loginSubtitle": "Access the internal sales and operations workspace.", "email": "Email", "password": "Password", "signIn": "Sign in", "logout": "Logout", "user": "User" },
+  "dashboard": { "eyebrow": "Overview", "title": "Executive dashboard", "metrics": "Dashboard metrics", "totalLeads": "Total leads", "newLeads": "New leads", "followUpsToday": "Follow-ups today", "overdueFollowUps": "Overdue follow-ups", "availableUnits": "Available units", "reservedUnits": "Reserved units", "soldUnits": "Sold units", "totalTasks": "Total tasks" },
+  "leads": { "eyebrow": "CRM", "title": "Leads", "add": "Add lead", "formTitle": "Lead form", "detail": "Lead details", "name": "Name", "phone": "Phone", "email": "Email", "source": "Source", "project": "Project", "budget": "Budget", "status": "Status", "assignedTo": "Assigned to", "notes": "Notes", "nextFollowUp": "Next follow-up" },
+  "activities": { "add": "Add activity", "timeline": "Activity timeline", "type": "Type", "note": "Note", "empty": "No activities yet" },
+  "projects": { "eyebrow": "Inventory", "title": "Projects", "add": "Add project", "formTitle": "Project form", "name": "Name", "location": "Location", "description": "Description", "status": "Status" },
+  "units": { "eyebrow": "Inventory", "title": "Units", "add": "Add unit", "formTitle": "Unit form", "project": "Project", "code": "Code", "type": "Type", "area": "Area", "floor": "Floor", "price": "Price", "status": "Status" },
+  "tasks": { "eyebrow": "Operations", "title": "Tasks", "add": "Add task", "formTitle": "Task form", "titleField": "Title", "description": "Description", "assignedTo": "Assigned to", "lead": "Lead", "dueDate": "Due date", "priority": "Priority", "status": "Status" },
+  "calendar": { "eyebrow": "Schedule", "title": "Calendar and follow-ups", "todayFollowUps": "Today follow-ups", "upcomingFollowUps": "Upcoming follow-ups", "overdueFollowUps": "Overdue follow-ups", "tasksByDueDate": "Tasks by due date" },
+  "leadStatuses": { "new": "New", "contacted": "Contacted", "follow_up": "Follow-up", "site_visit": "Site visit", "negotiation": "Negotiation", "reserved": "Reserved", "contracted": "Contracted", "lost": "Lost" },
+  "leadSources": { "facebook": "Facebook", "website": "Website", "referral": "Referral", "walk_in": "Walk-in", "campaign": "Campaign", "other": "Other" },
+  "activityTypes": { "call": "Call", "whatsapp": "WhatsApp", "meeting": "Meeting", "note": "Note", "follow_up": "Follow-up" },
+  "projectStatuses": { "planning": "Planning", "active": "Active", "completed": "Completed", "paused": "Paused" },
+  "unitStatuses": { "available": "Available", "reserved": "Reserved", "sold": "Sold" },
+  "unitTypes": { "studio": "Studio", "apartment": "Apartment", "duplex": "Duplex", "villa": "Villa", "office": "Office", "retail": "Retail" },
+  "taskStatuses": { "pending": "Pending", "in_progress": "In progress", "done": "Done", "cancelled": "Cancelled" },
+  "priorities": { "low": "Low", "medium": "Medium", "high": "High" }
+}

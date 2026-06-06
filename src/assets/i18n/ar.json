@@ -1,0 +1,21 @@
+{
+  "layout": { "brand": "إستيت أوبس", "subtitle": "نظام عقاري داخلي", "sidebar": "التنقل الرئيسي", "menu": "فتح القائمة", "workspace": "مساحة العمل الداخلية" },
+  "nav": { "dashboard": "لوحة التحكم", "leads": "العملاء المحتملون", "projects": "المشروعات", "units": "الوحدات", "tasks": "المهام", "calendar": "التقويم" },
+  "common": { "actions": "الإجراءات", "add": "إضافة", "edit": "تعديل", "save": "حفظ", "cancel": "إلغاء", "filter": "تصفية", "empty": "لا توجد سجلات", "loading": "جار التحميل", "none": "لا يوجد", "unassigned": "غير معين", "back": "العودة للعملاء", "language": "تغيير اللغة", "theme": "تغيير المظهر", "allStatuses": "كل الحالات", "allSources": "كل المصادر", "allProjects": "كل المشروعات", "allUsers": "كل المستخدمين" },
+  "auth": { "loginTitle": "تسجيل الدخول", "loginSubtitle": "الدخول إلى مساحة المبيعات والتشغيل الداخلية.", "email": "البريد الإلكتروني", "password": "كلمة المرور", "signIn": "دخول", "logout": "خروج", "user": "مستخدم" },
+  "dashboard": { "eyebrow": "نظرة عامة", "title": "لوحة الإدارة", "metrics": "مؤشرات لوحة التحكم", "totalLeads": "إجمالي العملاء", "newLeads": "عملاء جدد", "followUpsToday": "متابعات اليوم", "overdueFollowUps": "متابعات متأخرة", "availableUnits": "وحدات متاحة", "reservedUnits": "وحدات محجوزة", "soldUnits": "وحدات مباعة", "totalTasks": "إجمالي المهام" },
+  "leads": { "eyebrow": "إدارة العملاء", "title": "العملاء المحتملون", "add": "إضافة عميل", "formTitle": "بيانات العميل", "detail": "تفاصيل العميل", "name": "الاسم", "phone": "الهاتف", "email": "البريد الإلكتروني", "source": "المصدر", "project": "المشروع", "budget": "الميزانية", "status": "الحالة", "assignedTo": "المسؤول", "notes": "ملاحظات", "nextFollowUp": "المتابعة القادمة" },
+  "activities": { "add": "إضافة نشاط", "timeline": "سجل الأنشطة", "type": "النوع", "note": "ملاحظة", "empty": "لا توجد أنشطة بعد" },
+  "projects": { "eyebrow": "المخزون", "title": "المشروعات", "add": "إضافة مشروع", "formTitle": "بيانات المشروع", "name": "الاسم", "location": "الموقع", "description": "الوصف", "status": "الحالة" },
+  "units": { "eyebrow": "المخزون", "title": "الوحدات", "add": "إضافة وحدة", "formTitle": "بيانات الوحدة", "project": "المشروع", "code": "الكود", "type": "النوع", "area": "المساحة", "floor": "الدور", "price": "السعر", "status": "الحالة" },
+  "tasks": { "eyebrow": "التشغيل", "title": "المهام", "add": "إضافة مهمة", "formTitle": "بيانات المهمة", "titleField": "العنوان", "description": "الوصف", "assignedTo": "المسؤول", "lead": "العميل", "dueDate": "تاريخ الاستحقاق", "priority": "الأولوية", "status": "الحالة" },
+  "calendar": { "eyebrow": "المواعيد", "title": "التقويم والمتابعات", "todayFollowUps": "متابعات اليوم", "upcomingFollowUps": "متابعات قادمة", "overdueFollowUps": "متابعات متأخرة", "tasksByDueDate": "المهام حسب التاريخ" },
+  "leadStatuses": { "new": "جديد", "contacted": "تم التواصل", "follow_up": "متابعة", "site_visit": "زيارة موقع", "negotiation": "تفاوض", "reserved": "حجز", "contracted": "تعاقد", "lost": "مفقود" },
+  "leadSources": { "facebook": "فيسبوك", "website": "الموقع", "referral": "ترشيح", "walk_in": "زيارة مباشرة", "campaign": "حملة", "other": "أخرى" },
+  "activityTypes": { "call": "مكالمة", "whatsapp": "واتساب", "meeting": "اجتماع", "note": "ملاحظة", "follow_up": "متابعة" },
+  "projectStatuses": { "planning": "تخطيط", "active": "نشط", "completed": "مكتمل", "paused": "متوقف" },
+  "unitStatuses": { "available": "متاحة", "reserved": "محجوزة", "sold": "مباعة" },
+  "unitTypes": { "studio": "استوديو", "apartment": "شقة", "duplex": "دوبلكس", "villa": "فيلا", "office": "مكتب", "retail": "تجاري" },
+  "taskStatuses": { "pending": "قيد الانتظار", "in_progress": "قيد التنفيذ", "done": "منتهية", "cancelled": "ملغاة" },
+  "priorities": { "low": "منخفضة", "medium": "متوسطة", "high": "عالية" }
+}
