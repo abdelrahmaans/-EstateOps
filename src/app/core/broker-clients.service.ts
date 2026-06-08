@@ -51,4 +51,11 @@ export class BrokerClientsService {
       throw error;
     }
   }
+
+  async remove(id: string): Promise<void> {
+    const { error } = await this.supabase.from('broker_clients').delete().eq('id', id);
+    if (error) {
+      throw error;
+    }
+  }
 }

@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime } from 'rxjs';
 import { toErrorMessage } from '../../core/errors';
+import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { BuildingCategory, DeliveryStatus, EastDistrict, FinishingStatus, NileSide, PaymentPlan, Project, Unit, UnitDistrict, UnitStatus, UnitType, WestDistrict } from '../../core/models';
 import { ProjectsService } from '../../core/projects.service';
@@ -19,7 +22,7 @@ import { labelKey } from '../../shared/status-label';
       <button class="button primary" type="button" (click)="startCreate()">{{ 'units.add' | t }}</button>
     </section>
 
-    <form class="filters wide-filters" [formGroup]="filters" (ngSubmit)="load()">
+    <form class="filters wide-filters compact-filters" [formGroup]="filters">
       <select formControlName="projectId" [attr.aria-label]="'units.project' | t">
         <option value="">{{ 'common.allProjects' | t }}</option>
         @for (project of projects(); track project.id) { <option [value]="project.id">{{ project.name }}</option> }
@@ -77,7 +80,6 @@ import { labelKey } from '../../shared/status-label';
         <span>{{ 'units.maxArea' | t }}</span>
         <input type="number" formControlName="maxArea" [attr.aria-label]="'units.maxArea' | t" />
       </label>
-      <button class="button" type="submit">{{ 'common.filter' | t }}</button>
       <button class="button ghost" type="button" (click)="clearFilters()">{{ 'common.clear' | t }}</button>
     </form>
 
@@ -111,7 +113,12 @@ import { labelKey } from '../../shared/status-label';
               <td>{{ finishingKey(unit.finishing) | t }}</td>
               <td>{{ paymentKey(unit.payment_plan) | t }}</td>
               <td><span class="badge" [class]="unit.status">{{ statusKey(unit.status) | t }}</span></td>
-              <td><button class="link-button" type="button" (click)="startEdit(unit)">{{ 'common.edit' | t }}</button></td>
+              <td>
+                <div class="table-actions">
+                  <button class="icon-button table-action" type="button" (click)="startEdit(unit)" [attr.aria-label]="'common.edit' | t">✎</button>
+                  <button class="icon-button table-action danger-action" type="button" (click)="deleteUnit(unit)" [attr.aria-label]="'common.delete' | t">×</button>
+                </div>
+              </td>
             </tr>
           } @empty {
             <tr><td colspan="10" class="empty">{{ 'common.empty' | t }}</td></tr>
@@ -156,6 +163,8 @@ export class UnitsPage {
   private readonly service = inject(UnitsService);
   private readonly projectsService = inject(ProjectsService);
   private readonly fb = inject(FormBuilder);
+  private readonly i18n = inject(I18nService);
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly units = signal<Unit[]>([]);
   protected readonly projects = signal<Project[]>([]);
   protected readonly editing = signal<Unit | 'new' | null>(null);
@@ -209,6 +218,9 @@ export class UnitsPage {
   });
 
   constructor() {
+    this.filters.valueChanges
+      .pipe(debounceTime(250), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => void this.load());
     void this.loadSupport();
     void this.load();
   }
@@ -307,6 +319,19 @@ export class UnitsPage {
         await this.service.update(editing.id, payload);
       }
       this.cancel();
+      await this.load();
+    } catch (error) {
+      this.error.set(toErrorMessage(error));
+    }
+  }
+
+  protected async deleteUnit(unit: Unit): Promise<void> {
+    if (!confirm(this.i18n.t('common.confirmDelete'))) {
+      return;
+    }
+
+    try {
+      await this.service.remove(unit.id);
       await this.load();
     } catch (error) {
       this.error.set(toErrorMessage(error));

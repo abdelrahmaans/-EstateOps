@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime } from 'rxjs';
 import { toErrorMessage } from '../../core/errors';
+import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { BuyerPurpose, Lead, LeadSource, NileSide, PaymentPlan } from '../../core/models';
 import { LeadPayload, LeadsService } from '../../core/leads.service';
@@ -19,7 +22,7 @@ import { labelKey } from '../../shared/status-label';
       <button class="button primary" type="button" (click)="startCreate()">{{ 'leads.add' | t }}</button>
     </section>
 
-    <form class="filters wide-filters" [formGroup]="filters" (ngSubmit)="load()">
+    <form class="filters compact-filters" [formGroup]="filters">
       <select formControlName="source" [attr.aria-label]="'leads.source' | t">
         <option value="">{{ 'common.allSources' | t }}</option>
         @for (source of leadSources; track source) { <option [value]="source">{{ sourceKey(source) | t }}</option> }
@@ -44,7 +47,6 @@ import { labelKey } from '../../shared/status-label';
         <span>{{ 'leads.maxDesiredArea' | t }}</span>
         <input type="number" formControlName="maxDesiredArea" [attr.aria-label]="'leads.maxDesiredArea' | t" />
       </label>
-      <button class="button" type="submit">{{ 'common.filter' | t }}</button>
       <button class="button ghost" type="button" (click)="clearFilters()">{{ 'common.clear' | t }}</button>
     </form>
 
@@ -76,7 +78,12 @@ import { labelKey } from '../../shared/status-label';
               <td>{{ lead.desired_area ?? ('common.none' | t) }}</td>
               <td>{{ paymentKey(lead.payment_plan) | t }}</td>
               <td>{{ lead.budget ?? ('common.none' | t) }}</td>
-              <td><button class="link-button" type="button" (click)="startEdit(lead)">{{ 'common.edit' | t }}</button></td>
+              <td>
+                <div class="table-actions">
+                  <button class="icon-button table-action" type="button" (click)="startEdit(lead)" [attr.aria-label]="'common.edit' | t">✎</button>
+                  <button class="icon-button table-action danger-action" type="button" (click)="deleteLead(lead)" [attr.aria-label]="'common.delete' | t">×</button>
+                </div>
+              </td>
             </tr>
           } @empty {
             <tr><td colspan="9" class="empty">{{ 'common.empty' | t }}</td></tr>
@@ -112,6 +119,8 @@ import { labelKey } from '../../shared/status-label';
 export class LeadsList {
   private readonly fb = inject(FormBuilder);
   private readonly leadsService = inject(LeadsService);
+  private readonly i18n = inject(I18nService);
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly leads = signal<Lead[]>([]);
   protected readonly editing = signal<Lead | 'new' | null>(null);
   protected readonly error = signal('');
@@ -143,6 +152,9 @@ export class LeadsList {
   });
 
   constructor() {
+    this.filters.valueChanges
+      .pipe(debounceTime(250), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => void this.load());
     void this.load();
   }
 
@@ -216,6 +228,19 @@ export class LeadsList {
         await this.leadsService.update(editing.id, payload);
       }
       this.cancel();
+      await this.load();
+    } catch (error) {
+      this.error.set(toErrorMessage(error));
+    }
+  }
+
+  protected async deleteLead(lead: Lead): Promise<void> {
+    if (!confirm(this.i18n.t('common.confirmDelete'))) {
+      return;
+    }
+
+    try {
+      await this.leadsService.remove(lead.id);
       await this.load();
     } catch (error) {
       this.error.set(toErrorMessage(error));

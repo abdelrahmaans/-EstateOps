@@ -77,6 +77,13 @@ export class LeadsService {
     }
   }
 
+  async remove(id: string): Promise<void> {
+    const { error } = await this.supabase.from('leads').delete().eq('id', id);
+    if (error) {
+      throw error;
+    }
+  }
+
   async activities(leadId: string): Promise<LeadActivity[]> {
     const { data, error } = await this.supabase
       .from('lead_activities')

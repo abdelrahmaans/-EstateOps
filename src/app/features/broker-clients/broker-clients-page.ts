@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime } from 'rxjs';
 import { BrokerClientPayload, BrokerClientsService } from '../../core/broker-clients.service';
 import { toErrorMessage } from '../../core/errors';
+import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { BrokerClient, BrokerClientStatus, Profile } from '../../core/models';
 import { UsersService } from '../../core/users.service';
@@ -19,7 +22,7 @@ import { labelKey } from '../../shared/status-label';
       <button class="button primary" type="button" (click)="startCreate()">{{ 'brokerClients.add' | t }}</button>
     </section>
 
-    <form class="filters" [formGroup]="filters" (ngSubmit)="load()">
+    <form class="filters compact-filters" [formGroup]="filters">
       <select formControlName="status" [attr.aria-label]="'brokerClients.status' | t">
         <option value="">{{ 'common.allStatuses' | t }}</option>
         @for (status of statuses; track status) {
@@ -36,7 +39,6 @@ import { labelKey } from '../../shared/status-label';
         <span>{{ 'brokerClients.phoneSearch' | t }}</span>
         <input formControlName="phone" [attr.aria-label]="'brokerClients.phoneSearch' | t" />
       </label>
-      <button class="button" type="submit">{{ 'common.filter' | t }}</button>
       <button class="button ghost" type="button" (click)="clearFilters()">{{ 'common.clear' | t }}</button>
     </form>
 
@@ -64,7 +66,12 @@ import { labelKey } from '../../shared/status-label';
               <td><span class="badge">{{ statusKey(client.status) | t }}</span></td>
               <td>{{ client.assignee?.full_name ?? ('common.unassigned' | t) }}</td>
               <td>{{ client.client_recommendations ?? ('common.none' | t) }}</td>
-              <td><button class="link-button" type="button" (click)="startEdit(client)">{{ 'common.edit' | t }}</button></td>
+              <td>
+                <div class="table-actions">
+                  <button class="icon-button table-action" type="button" (click)="startEdit(client)" [attr.aria-label]="'common.edit' | t">✎</button>
+                  <button class="icon-button table-action danger-action" type="button" (click)="deleteClient(client)" [attr.aria-label]="'common.delete' | t">×</button>
+                </div>
+              </td>
             </tr>
           } @empty {
             <tr><td colspan="7" class="empty">{{ 'common.empty' | t }}</td></tr>
@@ -97,6 +104,8 @@ export class BrokerClientsPage {
   private readonly fb = inject(FormBuilder);
   private readonly brokerClientsService = inject(BrokerClientsService);
   private readonly usersService = inject(UsersService);
+  private readonly i18n = inject(I18nService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly clients = signal<BrokerClient[]>([]);
   protected readonly users = signal<Profile[]>([]);
@@ -120,6 +129,9 @@ export class BrokerClientsPage {
   });
 
   constructor() {
+    this.filters.valueChanges
+      .pipe(debounceTime(250), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => void this.load());
     void this.loadSupport();
     void this.load();
   }
@@ -184,6 +196,19 @@ export class BrokerClientsPage {
         await this.brokerClientsService.update(editing.id, payload);
       }
       this.cancel();
+      await this.load();
+    } catch (error) {
+      this.error.set(toErrorMessage(error));
+    }
+  }
+
+  protected async deleteClient(client: BrokerClient): Promise<void> {
+    if (!confirm(this.i18n.t('common.confirmDelete'))) {
+      return;
+    }
+
+    try {
+      await this.brokerClientsService.remove(client.id);
       await this.load();
     } catch (error) {
       this.error.set(toErrorMessage(error));
