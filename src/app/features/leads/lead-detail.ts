@@ -15,10 +15,10 @@ import { labelKey } from '../../shared/status-label';
       <div>
         <a class="back-link" routerLink="/leads">{{ 'common.back' | t }}</a>
         <h2>{{ lead()?.name ?? ('leads.detail' | t) }}</h2>
-        <p>{{ lead()?.phone }} · {{ lead()?.email ?? ('common.none' | t) }}</p>
+        <p>{{ lead()?.phone }}</p>
       </div>
       @if (lead()) {
-        <span class="badge" [class]="lead()?.status">{{ statusKey(lead()?.status ?? 'new') | t }}</span>
+        <span class="badge">{{ buyerStatusKey(lead()?.buyer_status ?? null) | t }}</span>
       }
     </section>
 
@@ -29,10 +29,16 @@ import { labelKey } from '../../shared/status-label';
         <article class="panel">
           <h3>{{ 'leads.detail' | t }}</h3>
           <dl class="details-list">
-            <div><dt>{{ 'leads.project' | t }}</dt><dd>{{ currentLead.project?.name ?? ('common.none' | t) }}</dd></div>
+            <div><dt>{{ 'leads.source' | t }}</dt><dd>{{ sourceKey(currentLead.source) | t }}</dd></div>
+            <div><dt>{{ 'leads.desiredNileSide' | t }}</dt><dd>{{ sideKey(currentLead.desired_nile_side) | t }}</dd></div>
+            <div><dt>{{ 'leads.buyerPurpose' | t }}</dt><dd>{{ purposeKey(currentLead.buyer_purpose) | t }}</dd></div>
+            <div><dt>{{ 'leads.paymentPlan' | t }}</dt><dd>{{ paymentKey(currentLead.payment_plan) | t }}</dd></div>
+            <div><dt>{{ 'leads.desiredArea' | t }}</dt><dd>{{ currentLead.desired_area ?? ('common.none' | t) }}</dd></div>
             <div><dt>{{ 'leads.assignedTo' | t }}</dt><dd>{{ currentLead.assignee?.full_name ?? ('common.unassigned' | t) }}</dd></div>
             <div><dt>{{ 'leads.budget' | t }}</dt><dd>{{ currentLead.budget ?? ('common.none' | t) }}</dd></div>
             <div><dt>{{ 'leads.nextFollowUp' | t }}</dt><dd>{{ currentLead.next_follow_up_date ?? ('common.none' | t) }}</dd></div>
+            <div class="span-2"><dt>{{ 'leads.callResult' | t }}</dt><dd>{{ currentLead.call_result ?? ('common.none' | t) }}</dd></div>
+            <div class="span-2"><dt>{{ 'leads.clientRecommendations' | t }}</dt><dd>{{ currentLead.client_recommendations ?? ('common.none' | t) }}</dd></div>
             <div class="span-2"><dt>{{ 'leads.notes' | t }}</dt><dd>{{ currentLead.notes ?? ('common.none' | t) }}</dd></div>
           </dl>
         </article>
@@ -94,9 +100,11 @@ export class LeadDetail {
     }
   }
 
-  protected statusKey(status: string): string {
-    return labelKey('leadStatuses', status);
-  }
+  protected buyerStatusKey(status: string | null): string { return labelKey('buyerStatuses', status); }
+  protected sourceKey(source: string | null): string { return labelKey('leadSources', source); }
+  protected sideKey(side: string | null): string { return labelKey('nileSides', side); }
+  protected purposeKey(purpose: string | null): string { return labelKey('buyerPurposes', purpose); }
+  protected paymentKey(plan: string | null): string { return labelKey('paymentPlans', plan); }
 
   protected activityKey(type: ActivityType): string {
     return labelKey('activityTypes', type);

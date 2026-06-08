@@ -1,6 +1,8 @@
 export type UserRole = 'admin' | 'manager' | 'secretary' | 'sales';
 export type LeadStatus = 'new' | 'contacted' | 'follow_up' | 'site_visit' | 'negotiation' | 'reserved' | 'contracted' | 'lost';
-export type LeadSource = 'facebook' | 'website' | 'referral' | 'walk_in' | 'campaign' | 'other';
+export type LeadSource = 'social' | 'company' | 'relations';
+export type BuyerPurpose = 'investment' | 'personal_use';
+export type BuyerStatus = 'interested' | 'not_interested' | 'visited' | 'inspection_done' | 'purchased';
 export type ActivityType = 'call' | 'whatsapp' | 'meeting' | 'note' | 'follow_up';
 export type ProjectStatus = 'planning' | 'active' | 'completed' | 'paused';
 export type UnitStatus = 'available' | 'reserved' | 'sold';
@@ -67,6 +69,13 @@ export interface Lead {
   interested_project_id: string | null;
   project?: Pick<Project, 'name'> | null;
   budget: number | null;
+  desired_nile_side: NileSide | null;
+  buyer_purpose: BuyerPurpose | null;
+  desired_area: number | null;
+  payment_plan: PaymentPlan | null;
+  call_result: string | null;
+  buyer_status: BuyerStatus | null;
+  client_recommendations: string | null;
   status: LeadStatus;
   assigned_to: string | null;
   assignee?: Pick<Profile, 'full_name'> | null;

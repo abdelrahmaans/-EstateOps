@@ -61,10 +61,22 @@ import { labelKey } from '../../shared/status-label';
         <option value="">{{ 'units.allPaymentPlans' | t }}</option>
         @for (plan of paymentPlans; track plan) { <option [value]="plan">{{ paymentKey(plan) | t }}</option> }
       </select>
-      <input type="number" formControlName="minPrice" [placeholder]="'units.minPrice' | t" [attr.aria-label]="'units.minPrice' | t" />
-      <input type="number" formControlName="maxPrice" [placeholder]="'units.maxPrice' | t" [attr.aria-label]="'units.maxPrice' | t" />
-      <input type="number" formControlName="minArea" [placeholder]="'units.minArea' | t" [attr.aria-label]="'units.minArea' | t" />
-      <input type="number" formControlName="maxArea" [placeholder]="'units.maxArea' | t" [attr.aria-label]="'units.maxArea' | t" />
+      <label class="filter-field">
+        <span>{{ 'units.minPrice' | t }}</span>
+        <input type="number" formControlName="minPrice" [attr.aria-label]="'units.minPrice' | t" />
+      </label>
+      <label class="filter-field">
+        <span>{{ 'units.maxPrice' | t }}</span>
+        <input type="number" formControlName="maxPrice" [attr.aria-label]="'units.maxPrice' | t" />
+      </label>
+      <label class="filter-field">
+        <span>{{ 'units.minArea' | t }}</span>
+        <input type="number" formControlName="minArea" [attr.aria-label]="'units.minArea' | t" />
+      </label>
+      <label class="filter-field">
+        <span>{{ 'units.maxArea' | t }}</span>
+        <input type="number" formControlName="maxArea" [attr.aria-label]="'units.maxArea' | t" />
+      </label>
       <button class="button" type="submit">{{ 'common.filter' | t }}</button>
       <button class="button ghost" type="button" (click)="clearFilters()">{{ 'common.clear' | t }}</button>
     </form>

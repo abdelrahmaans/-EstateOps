@@ -2,7 +2,9 @@ create extension if not exists pgcrypto;
 
 create type user_role as enum ('admin', 'manager', 'secretary', 'sales');
 create type lead_status as enum ('new', 'contacted', 'follow_up', 'site_visit', 'negotiation', 'reserved', 'contracted', 'lost');
-create type lead_source as enum ('facebook', 'website', 'referral', 'walk_in', 'campaign', 'other');
+create type lead_source as enum ('facebook', 'website', 'referral', 'walk_in', 'campaign', 'other', 'social', 'company', 'relations');
+create type buyer_purpose as enum ('investment', 'personal_use');
+create type buyer_status as enum ('interested', 'not_interested', 'visited', 'inspection_done', 'purchased');
 create type activity_type as enum ('call', 'whatsapp', 'meeting', 'note', 'follow_up');
 create type project_status as enum ('planning', 'active', 'completed', 'paused');
 create type unit_status as enum ('available', 'reserved', 'sold');
@@ -65,6 +67,13 @@ create table leads (
   source lead_source not null default 'other',
   interested_project_id uuid references projects(id) on delete set null,
   budget numeric(14, 2),
+  desired_nile_side nile_side,
+  buyer_purpose buyer_purpose,
+  desired_area numeric(10, 2),
+  payment_plan payment_plan,
+  call_result text,
+  buyer_status buyer_status,
+  client_recommendations text,
   status lead_status not null default 'new',
   assigned_to uuid references profiles(id) on delete set null,
   notes text,
@@ -96,6 +105,10 @@ create table tasks (
 );
 
 create index leads_status_idx on leads(status);
+create index leads_buyer_status_idx on leads(buyer_status);
+create index leads_desired_nile_side_idx on leads(desired_nile_side);
+create index leads_buyer_purpose_idx on leads(buyer_purpose);
+create index leads_payment_plan_idx on leads(payment_plan);
 create index leads_assigned_to_idx on leads(assigned_to);
 create index leads_next_follow_up_date_idx on leads(next_follow_up_date);
 create index tasks_assigned_to_idx on tasks(assigned_to);

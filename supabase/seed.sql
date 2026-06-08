@@ -205,11 +205,45 @@ on conflict (code) do update set
   owner_phone = excluded.owner_phone,
   owner_name = excluded.owner_name;
 
-insert into leads (id, name, phone, email, source, interested_project_id, budget, status, assigned_to, notes, next_follow_up_date) values
-  ('20000000-0000-0000-0000-000000000001', 'Omar Hassan', '+201001112233', 'omar@example.com', 'facebook', '10000000-0000-0000-0000-000000000001', 5000000, 'follow_up', '00000000-0000-0000-0000-000000000004', 'Interested in 3-bedroom apartment.', current_date),
-  ('20000000-0000-0000-0000-000000000002', 'Mona Ali', '+201002223344', 'mona@example.com', 'website', '10000000-0000-0000-0000-000000000002', 6500000, 'new', '00000000-0000-0000-0000-000000000004', 'Asked for office payment plan.', current_date + 2),
-  ('20000000-0000-0000-0000-000000000003', 'Youssef Samir', '+201003334455', null, 'referral', '10000000-0000-0000-0000-000000000003', 16000000, 'site_visit', null, 'Villa inquiry.', current_date - 1)
-on conflict (id) do nothing;
+insert into leads (
+  id,
+  name,
+  phone,
+  email,
+  source,
+  interested_project_id,
+  budget,
+  desired_nile_side,
+  buyer_purpose,
+  desired_area,
+  payment_plan,
+  call_result,
+  buyer_status,
+  assigned_to,
+  client_recommendations,
+  notes,
+  next_follow_up_date
+) values
+  ('20000000-0000-0000-0000-000000000001', 'Omar Hassan', '+201001112233', null, 'social', null, 5000000, 'east', 'personal_use', 135, 'installment', 'Asked for ready-to-deliver apartment options.', 'interested', '00000000-0000-0000-0000-000000000004', 'Show east Nile apartments with elevator and full finishing.', 'Interested in 3-bedroom apartment.', current_date),
+  ('20000000-0000-0000-0000-000000000002', 'Mona Ali', '+201002223344', null, 'company', null, 6500000, 'west', 'investment', 90, 'cash', 'Prefers commercial or compact unit.', 'visited', '00000000-0000-0000-0000-000000000004', 'Recommend west Nile ready units near Corniche.', 'Asked for investment options.', current_date + 2),
+  ('20000000-0000-0000-0000-000000000003', 'Youssef Samir', '+201003334455', null, 'relations', null, 16000000, 'west', 'personal_use', 250, 'cash', 'Needs family unit and accepted inspection.', 'inspection_done', null, 'Recommend larger west Nile properties.', 'Villa inquiry.', current_date - 1)
+on conflict (id) do update set
+  name = excluded.name,
+  phone = excluded.phone,
+  email = excluded.email,
+  source = excluded.source,
+  interested_project_id = excluded.interested_project_id,
+  budget = excluded.budget,
+  desired_nile_side = excluded.desired_nile_side,
+  buyer_purpose = excluded.buyer_purpose,
+  desired_area = excluded.desired_area,
+  payment_plan = excluded.payment_plan,
+  call_result = excluded.call_result,
+  buyer_status = excluded.buyer_status,
+  assigned_to = excluded.assigned_to,
+  client_recommendations = excluded.client_recommendations,
+  notes = excluded.notes,
+  next_follow_up_date = excluded.next_follow_up_date;
 
 insert into lead_activities (id, lead_id, type, note, created_by) values
   ('30000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'call', 'Initial qualification call completed.', '00000000-0000-0000-0000-000000000004'),

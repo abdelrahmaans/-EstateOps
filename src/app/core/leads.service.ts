@@ -1,12 +1,16 @@
 import { Injectable, inject } from '@angular/core';
-import { ActivityType, Lead, LeadActivity, LeadSource, LeadStatus } from './models';
+import { ActivityType, BuyerPurpose, BuyerStatus, Lead, LeadActivity, LeadSource, NileSide, PaymentPlan } from './models';
 import { SupabaseService } from './supabase.service';
 
 export interface LeadFilters {
-  status?: LeadStatus | '';
   source?: LeadSource | '';
-  projectId?: string;
+  desiredNileSide?: NileSide | '';
+  buyerPurpose?: BuyerPurpose | '';
+  paymentPlan?: PaymentPlan | '';
+  buyerStatus?: BuyerStatus | '';
   assignedTo?: string;
+  minDesiredArea?: number | null;
+  maxDesiredArea?: number | null;
 }
 
 export type LeadPayload = Omit<Lead, 'id' | 'created_at' | 'updated_at' | 'project' | 'assignee'>;
@@ -21,17 +25,29 @@ export class LeadsService {
       .select('*, project:projects(name), assignee:profiles!leads_assigned_to_fkey(full_name)')
       .order('created_at', { ascending: false });
 
-    if (filters.status) {
-      query = query.eq('status', filters.status);
-    }
     if (filters.source) {
       query = query.eq('source', filters.source);
     }
-    if (filters.projectId) {
-      query = query.eq('interested_project_id', filters.projectId);
+    if (filters.desiredNileSide) {
+      query = query.eq('desired_nile_side', filters.desiredNileSide);
+    }
+    if (filters.buyerPurpose) {
+      query = query.eq('buyer_purpose', filters.buyerPurpose);
+    }
+    if (filters.paymentPlan) {
+      query = query.eq('payment_plan', filters.paymentPlan);
+    }
+    if (filters.buyerStatus) {
+      query = query.eq('buyer_status', filters.buyerStatus);
     }
     if (filters.assignedTo) {
       query = query.eq('assigned_to', filters.assignedTo);
+    }
+    if (filters.minDesiredArea !== null && filters.minDesiredArea !== undefined) {
+      query = query.gte('desired_area', filters.minDesiredArea);
+    }
+    if (filters.maxDesiredArea !== null && filters.maxDesiredArea !== undefined) {
+      query = query.lte('desired_area', filters.maxDesiredArea);
     }
 
     const { data, error } = await query;

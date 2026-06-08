@@ -20,7 +20,7 @@ interface NavItem {
     <div class="app-shell" [class.sidebar-open]="sidebarOpen()">
       <aside class="sidebar" [attr.aria-label]="'layout.sidebar' | t">
         <a class="brand" routerLink="/">
-          <span class="brand-mark" aria-hidden="true">RE</span>
+          <span class="brand-mark" aria-hidden="true">FL</span>
           <span>
             <strong>{{ 'layout.brand' | t }}</strong>
             <small>{{ 'layout.subtitle' | t }}</small>

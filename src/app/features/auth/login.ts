@@ -18,7 +18,7 @@ import { ThemeToggle } from '../../shared/components/theme-toggle/theme-toggle';
           <app-theme-toggle />
         </div>
         <div class="brand auth-brand">
-          <span class="brand-mark" aria-hidden="true">RE</span>
+          <span class="brand-mark" aria-hidden="true">FL</span>
           <span>
             <strong>{{ 'layout.brand' | t }}</strong>
             <small>{{ 'layout.subtitle' | t }}</small>
