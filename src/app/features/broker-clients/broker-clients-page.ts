@@ -4,10 +4,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs';
 import { BrokerClientPayload, BrokerClientsService } from '../../core/broker-clients.service';
 import { toErrorMessage } from '../../core/errors';
-import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { BrokerClient, BrokerClientStatus, Profile } from '../../core/models';
 import { UsersService } from '../../core/users.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog.service';
 import { labelKey } from '../../shared/status-label';
 
 @Component({
@@ -104,7 +104,7 @@ export class BrokerClientsPage {
   private readonly fb = inject(FormBuilder);
   private readonly brokerClientsService = inject(BrokerClientsService);
   private readonly usersService = inject(UsersService);
-  private readonly i18n = inject(I18nService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly clients = signal<BrokerClient[]>([]);
@@ -203,7 +203,7 @@ export class BrokerClientsPage {
   }
 
   protected async deleteClient(client: BrokerClient): Promise<void> {
-    if (!confirm(this.i18n.t('common.confirmDelete'))) {
+    if (!await this.confirmDialog.confirm()) {
       return;
     }
 

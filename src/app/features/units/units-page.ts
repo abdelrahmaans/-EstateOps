@@ -3,11 +3,11 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs';
 import { toErrorMessage } from '../../core/errors';
-import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { BuildingCategory, DeliveryStatus, EastDistrict, FinishingStatus, NileSide, PaymentPlan, Project, Unit, UnitDistrict, UnitStatus, UnitType, WestDistrict } from '../../core/models';
 import { ProjectsService } from '../../core/projects.service';
 import { UnitFilters, UnitPayload, UnitsService } from '../../core/units.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog.service';
 import { labelKey } from '../../shared/status-label';
 
 @Component({
@@ -163,7 +163,7 @@ export class UnitsPage {
   private readonly service = inject(UnitsService);
   private readonly projectsService = inject(ProjectsService);
   private readonly fb = inject(FormBuilder);
-  private readonly i18n = inject(I18nService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly units = signal<Unit[]>([]);
   protected readonly projects = signal<Project[]>([]);
@@ -326,7 +326,7 @@ export class UnitsPage {
   }
 
   protected async deleteUnit(unit: Unit): Promise<void> {
-    if (!confirm(this.i18n.t('common.confirmDelete'))) {
+    if (!await this.confirmDialog.confirm()) {
       return;
     }
 

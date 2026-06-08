@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { toErrorMessage } from '../../core/errors';
-import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { Project, ProjectStatus } from '../../core/models';
 import { ProjectPayload, ProjectsService } from '../../core/projects.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog.service';
 import { labelKey } from '../../shared/status-label';
 
 @Component({
@@ -44,7 +44,7 @@ import { labelKey } from '../../shared/status-label';
 export class ProjectsPage {
   private readonly service = inject(ProjectsService);
   private readonly fb = inject(FormBuilder);
-  private readonly i18n = inject(I18nService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   protected readonly projects = signal<Project[]>([]);
   protected readonly editing = signal<Project | 'new' | null>(null);
   protected readonly error = signal('');
@@ -61,7 +61,7 @@ export class ProjectsPage {
     try { const editing = this.editing(); if (editing === 'new') { await this.service.create(payload); } else if (editing) { await this.service.update(editing.id, payload); } this.cancel(); await this.load(); } catch (error) { this.error.set(toErrorMessage(error)); }
   }
   protected async deleteProject(project: Project): Promise<void> {
-    if (!confirm(this.i18n.t('common.confirmDelete'))) {
+    if (!await this.confirmDialog.confirm()) {
       return;
     }
 

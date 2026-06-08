@@ -4,10 +4,10 @@ import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs';
 import { toErrorMessage } from '../../core/errors';
-import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { BuyerPurpose, Lead, LeadSource, NileSide, PaymentPlan } from '../../core/models';
 import { LeadPayload, LeadsService } from '../../core/leads.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog.service';
 import { labelKey } from '../../shared/status-label';
 
 @Component({
@@ -119,7 +119,7 @@ import { labelKey } from '../../shared/status-label';
 export class LeadsList {
   private readonly fb = inject(FormBuilder);
   private readonly leadsService = inject(LeadsService);
-  private readonly i18n = inject(I18nService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly leads = signal<Lead[]>([]);
   protected readonly editing = signal<Lead | 'new' | null>(null);
@@ -235,7 +235,7 @@ export class LeadsList {
   }
 
   protected async deleteLead(lead: Lead): Promise<void> {
-    if (!confirm(this.i18n.t('common.confirmDelete'))) {
+    if (!await this.confirmDialog.confirm()) {
       return;
     }
 
