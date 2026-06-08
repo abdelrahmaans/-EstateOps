@@ -162,12 +162,48 @@ insert into projects (id, name, location, description, status) values
   ('10000000-0000-0000-0000-000000000003', 'Palm Valley Villas', '6th of October', 'Low-density villa community.', 'planning')
 on conflict (id) do nothing;
 
-insert into units (project_id, code, type, area, floor, price, status) values
-  ('10000000-0000-0000-0000-000000000001', 'NG-A-101', 'apartment', 135, 1, 4200000, 'available'),
-  ('10000000-0000-0000-0000-000000000001', 'NG-D-203', 'duplex', 220, 2, 7100000, 'reserved'),
-  ('10000000-0000-0000-0000-000000000002', 'MB-O-0904', 'office', 88, 9, 5600000, 'available'),
-  ('10000000-0000-0000-0000-000000000003', 'PV-V-12', 'villa', 340, null, 15800000, 'sold')
-on conflict (code) do nothing;
+insert into units (
+  project_id,
+  code,
+  type,
+  building_category,
+  delivery_status,
+  detailed_address,
+  nile_side,
+  district,
+  area,
+  floor,
+  price,
+  status,
+  has_elevator,
+  load_percentage,
+  finishing,
+  payment_plan,
+  notes,
+  owner_phone,
+  owner_name
+) values
+  ('10000000-0000-0000-0000-000000000001', 'NG-A-101', 'apartment', 'building', 'ready_to_deliver', 'Building 4, apartment 101, North Gate Residence', 'east', 'first_district', 135, 1, 4200000, 'available', true, 18, 'fully_finished', 'installment', 'Ready for site visit.', '+201011110001', 'Ahmed Mahmoud'),
+  ('10000000-0000-0000-0000-000000000001', 'NG-D-203', 'duplex', 'building', 'under_construction', 'Building 8, duplex 203, garden view', 'east', 'fifth_district', 220, 2, 7100000, 'reserved', true, 20, 'super_lux', 'cash', 'Reservation pending contract.', '+201011110002', 'Mariam Adel'),
+  ('10000000-0000-0000-0000-000000000002', 'MB-O-0904', 'office', 'tower', 'ready_to_deliver', 'Tower B, floor 9, office 904', 'west', 'corniche', 88, 9, 5600000, 'available', true, 15, 'semi_finished', 'installment', 'Commercial license available.', '+201011110003', 'Hany Sameh'),
+  ('10000000-0000-0000-0000-000000000003', 'PV-V-12', 'villa', 'other', 'under_construction', 'Villa 12, Palm Valley Villas', 'west', 'rawda', 340, null, 15800000, 'sold', false, 12, 'core_and_shell', 'cash', 'Sold demo unit.', '+201011110004', 'Noura Khaled')
+on conflict (code) do update set
+  building_category = excluded.building_category,
+  delivery_status = excluded.delivery_status,
+  detailed_address = excluded.detailed_address,
+  nile_side = excluded.nile_side,
+  district = excluded.district,
+  area = excluded.area,
+  floor = excluded.floor,
+  price = excluded.price,
+  status = excluded.status,
+  has_elevator = excluded.has_elevator,
+  load_percentage = excluded.load_percentage,
+  finishing = excluded.finishing,
+  payment_plan = excluded.payment_plan,
+  notes = excluded.notes,
+  owner_phone = excluded.owner_phone,
+  owner_name = excluded.owner_name;
 
 insert into leads (id, name, phone, email, source, interested_project_id, budget, status, assigned_to, notes, next_follow_up_date) values
   ('20000000-0000-0000-0000-000000000001', 'Omar Hassan', '+201001112233', 'omar@example.com', 'facebook', '10000000-0000-0000-0000-000000000001', 5000000, 'follow_up', '00000000-0000-0000-0000-000000000004', 'Interested in 3-bedroom apartment.', current_date),

@@ -5,6 +5,14 @@ export type ActivityType = 'call' | 'whatsapp' | 'meeting' | 'note' | 'follow_up
 export type ProjectStatus = 'planning' | 'active' | 'completed' | 'paused';
 export type UnitStatus = 'available' | 'reserved' | 'sold';
 export type UnitType = 'studio' | 'apartment' | 'duplex' | 'villa' | 'office' | 'retail';
+export type NileSide = 'east' | 'west';
+export type EastDistrict = 'first_district' | 'third_district' | 'fourth_district' | 'fifth_district' | 'azhar_district' | 'district_13' | 'other';
+export type WestDistrict = 'abasiry' | 'zohour' | 'ramad' | 'rawda' | 'mokbel' | 'ard_el_horreya' | 'corniche' | 'abdelsalam_aref' | 'salah_salem' | 'tayaran_behind_stadium' | 'other';
+export type UnitDistrict = EastDistrict | WestDistrict;
+export type FinishingStatus = 'core_and_shell' | 'semi_finished' | 'fully_finished' | 'super_lux';
+export type PaymentPlan = 'cash' | 'installment';
+export type BuildingCategory = 'tower' | 'building' | 'other';
+export type DeliveryStatus = 'under_construction' | 'ready_to_deliver';
 export type TaskStatus = 'pending' | 'in_progress' | 'done' | 'cancelled';
 export type TaskPriority = 'low' | 'medium' | 'high';
 
@@ -29,12 +37,24 @@ export interface Unit {
   id: string;
   project_id: string;
   project?: Pick<Project, 'name'>;
-  code: string;
+  code: string | null;
   type: UnitType;
+  building_category: BuildingCategory | null;
+  delivery_status: DeliveryStatus | null;
+  detailed_address: string | null;
+  nile_side: NileSide | null;
+  district: UnitDistrict | null;
   area: number;
   floor: number | null;
   price: number;
   status: UnitStatus;
+  has_elevator: boolean;
+  load_percentage: number | null;
+  finishing: FinishingStatus | null;
+  payment_plan: PaymentPlan | null;
+  notes: string | null;
+  owner_phone: string | null;
+  owner_name: string | null;
   created_at: string;
 }
 

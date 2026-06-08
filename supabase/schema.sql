@@ -7,6 +7,12 @@ create type activity_type as enum ('call', 'whatsapp', 'meeting', 'note', 'follo
 create type project_status as enum ('planning', 'active', 'completed', 'paused');
 create type unit_status as enum ('available', 'reserved', 'sold');
 create type unit_type as enum ('studio', 'apartment', 'duplex', 'villa', 'office', 'retail');
+create type nile_side as enum ('east', 'west');
+create type unit_district as enum ('first_district', 'third_district', 'fourth_district', 'fifth_district', 'azhar_district', 'district_13', 'abasiry', 'zohour', 'ramad', 'rawda', 'mokbel', 'ard_el_horreya', 'corniche', 'abdelsalam_aref', 'salah_salem', 'tayaran_behind_stadium', 'other');
+create type finishing_status as enum ('core_and_shell', 'semi_finished', 'fully_finished', 'super_lux');
+create type payment_plan as enum ('cash', 'installment');
+create type building_category as enum ('tower', 'building', 'other');
+create type delivery_status as enum ('under_construction', 'ready_to_deliver');
 create type task_status as enum ('pending', 'in_progress', 'done', 'cancelled');
 create type task_priority as enum ('low', 'medium', 'high');
 
@@ -30,12 +36,24 @@ create table projects (
 create table units (
   id uuid primary key default gen_random_uuid(),
   project_id uuid not null references projects(id) on delete cascade,
-  code text not null unique,
+  code text unique,
   type unit_type not null,
+  building_category building_category,
+  delivery_status delivery_status,
+  detailed_address text,
+  nile_side nile_side,
+  district unit_district,
   area numeric(10, 2) not null check (area > 0),
   floor integer,
   price numeric(14, 2) not null check (price >= 0),
   status unit_status not null default 'available',
+  has_elevator boolean not null default false,
+  load_percentage numeric(5, 2),
+  finishing finishing_status,
+  payment_plan payment_plan,
+  notes text,
+  owner_phone text,
+  owner_name text,
   created_at timestamptz not null default now()
 );
 
@@ -84,6 +102,12 @@ create index tasks_assigned_to_idx on tasks(assigned_to);
 create index tasks_due_date_idx on tasks(due_date);
 create index units_project_id_idx on units(project_id);
 create index units_status_idx on units(status);
+create index units_nile_side_idx on units(nile_side);
+create index units_district_idx on units(district);
+create index units_finishing_idx on units(finishing);
+create index units_payment_plan_idx on units(payment_plan);
+create index units_building_category_idx on units(building_category);
+create index units_delivery_status_idx on units(delivery_status);
 
 create or replace function set_updated_at()
 returns trigger
