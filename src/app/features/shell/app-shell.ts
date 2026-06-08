@@ -21,7 +21,7 @@ interface NavItem {
     <div class="app-shell" [class.sidebar-open]="sidebarOpen()">
       <aside class="sidebar" [attr.aria-label]="'layout.sidebar' | t">
         <a class="brand" routerLink="/">
-          <img class="brand-mark" ngSrc="assets/brand/future-line-logo.svg" width="52" height="52" alt="" priority />
+          <img class="brand-mark" ngSrc="assets/brand/future-line-logo.jpg" width="52" height="52" alt="" priority />
           <span>
             <strong>{{ 'layout.brand' | t }}</strong>
             <small>{{ 'layout.subtitle' | t }}</small>
@@ -71,8 +71,6 @@ export class AppShell {
     { path: '/broker-clients', labelKey: 'nav.brokerClients', area: 'leads' },
     { path: '/projects', labelKey: 'nav.projects', area: 'salesData' },
     { path: '/units', labelKey: 'nav.units', area: 'salesData' },
-    { path: '/tasks', labelKey: 'nav.tasks', area: 'tasks' },
-    { path: '/calendar', labelKey: 'nav.calendar', area: 'tasks' },
   ];
 
   protected readonly visibleNav = computed(() => {

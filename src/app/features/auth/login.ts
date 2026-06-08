@@ -19,7 +19,7 @@ import { ThemeToggle } from '../../shared/components/theme-toggle/theme-toggle';
           <app-theme-toggle />
         </div>
         <div class="brand auth-brand">
-          <img class="brand-mark" ngSrc="assets/brand/future-line-logo.svg" width="52" height="52" alt="" priority />
+          <img class="brand-mark" ngSrc="assets/brand/future-line-logo.jpg" width="52" height="52" alt="" priority />
           <span>
             <strong>{{ 'layout.brand' | t }}</strong>
             <small>{{ 'layout.subtitle' | t }}</small>

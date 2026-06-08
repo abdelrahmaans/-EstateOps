@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { toErrorMessage } from '../../core/errors';
+import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { Project, ProjectStatus } from '../../core/models';
 import { ProjectPayload, ProjectsService } from '../../core/projects.service';
@@ -14,7 +15,17 @@ import { labelKey } from '../../shared/status-label';
     @if (error()) { <p class="state error" role="alert">{{ error() }}</p> }
     <div class="table-wrap"><table><thead><tr><th>{{ 'projects.name' | t }}</th><th>{{ 'projects.location' | t }}</th><th>{{ 'projects.status' | t }}</th><th>{{ 'common.actions' | t }}</th></tr></thead><tbody>
       @for (project of projects(); track project.id) {
-        <tr><td>{{ project.name }}</td><td>{{ project.location }}</td><td><span class="badge">{{ statusKey(project.status) | t }}</span></td><td><button class="link-button" type="button" (click)="startEdit(project)">{{ 'common.edit' | t }}</button></td></tr>
+        <tr>
+          <td>{{ project.name }}</td>
+          <td>{{ project.location }}</td>
+          <td><span class="badge">{{ statusKey(project.status) | t }}</span></td>
+          <td>
+            <div class="table-actions">
+              <button class="icon-button table-action" type="button" (click)="startEdit(project)" [attr.aria-label]="'common.edit' | t">✎</button>
+              <button class="icon-button table-action danger-action" type="button" (click)="deleteProject(project)" [attr.aria-label]="'common.delete' | t">×</button>
+            </div>
+          </td>
+        </tr>
       } @empty { <tr><td colspan="4" class="empty">{{ 'common.empty' | t }}</td></tr> }
     </tbody></table></div>
     @if (editing()) {
@@ -33,6 +44,7 @@ import { labelKey } from '../../shared/status-label';
 export class ProjectsPage {
   private readonly service = inject(ProjectsService);
   private readonly fb = inject(FormBuilder);
+  private readonly i18n = inject(I18nService);
   protected readonly projects = signal<Project[]>([]);
   protected readonly editing = signal<Project | 'new' | null>(null);
   protected readonly error = signal('');
@@ -47,6 +59,18 @@ export class ProjectsPage {
     const raw = this.form.getRawValue();
     const payload: ProjectPayload = { ...raw, description: raw.description || null };
     try { const editing = this.editing(); if (editing === 'new') { await this.service.create(payload); } else if (editing) { await this.service.update(editing.id, payload); } this.cancel(); await this.load(); } catch (error) { this.error.set(toErrorMessage(error)); }
+  }
+  protected async deleteProject(project: Project): Promise<void> {
+    if (!confirm(this.i18n.t('common.confirmDelete'))) {
+      return;
+    }
+
+    try {
+      await this.service.remove(project.id);
+      await this.load();
+    } catch (error) {
+      this.error.set(toErrorMessage(error));
+    }
   }
   protected cancel(): void { this.editing.set(null); }
   protected statusKey(status: string): string { return labelKey('projectStatuses', status); }
