@@ -67,6 +67,7 @@ export class AppShell {
   private readonly navItems: NavItem[] = [
     { path: '/', labelKey: 'nav.dashboard', area: 'salesData' },
     { path: '/leads', labelKey: 'nav.leads', area: 'leads' },
+    { path: '/broker-clients', labelKey: 'nav.brokerClients', area: 'leads' },
     { path: '/projects', labelKey: 'nav.projects', area: 'salesData' },
     { path: '/units', labelKey: 'nav.units', area: 'salesData' },
     { path: '/tasks', labelKey: 'nav.tasks', area: 'tasks' },

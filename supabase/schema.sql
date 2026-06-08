@@ -4,7 +4,7 @@ create type user_role as enum ('admin', 'manager', 'secretary', 'sales');
 create type lead_status as enum ('new', 'contacted', 'follow_up', 'site_visit', 'negotiation', 'reserved', 'contracted', 'lost');
 create type lead_source as enum ('facebook', 'website', 'referral', 'walk_in', 'campaign', 'other', 'social', 'company', 'relations');
 create type buyer_purpose as enum ('investment', 'personal_use');
-create type buyer_status as enum ('interested', 'not_interested', 'visited', 'inspection_done', 'purchased');
+create type broker_client_status as enum ('interested', 'not_interested', 'visited', 'inspection_done', 'purchased');
 create type activity_type as enum ('call', 'whatsapp', 'meeting', 'note', 'follow_up');
 create type project_status as enum ('planning', 'active', 'completed', 'paused');
 create type unit_status as enum ('available', 'reserved', 'sold');
@@ -71,13 +71,22 @@ create table leads (
   buyer_purpose buyer_purpose,
   desired_area numeric(10, 2),
   payment_plan payment_plan,
-  call_result text,
-  buyer_status buyer_status,
-  client_recommendations text,
   status lead_status not null default 'new',
   assigned_to uuid references profiles(id) on delete set null,
   notes text,
   next_follow_up_date date,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table broker_clients (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  phone text not null,
+  call_result text,
+  status broker_client_status not null default 'interested',
+  assigned_to uuid references profiles(id) on delete set null,
+  client_recommendations text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -105,12 +114,14 @@ create table tasks (
 );
 
 create index leads_status_idx on leads(status);
-create index leads_buyer_status_idx on leads(buyer_status);
 create index leads_desired_nile_side_idx on leads(desired_nile_side);
 create index leads_buyer_purpose_idx on leads(buyer_purpose);
 create index leads_payment_plan_idx on leads(payment_plan);
 create index leads_assigned_to_idx on leads(assigned_to);
 create index leads_next_follow_up_date_idx on leads(next_follow_up_date);
+create index broker_clients_status_idx on broker_clients(status);
+create index broker_clients_assigned_to_idx on broker_clients(assigned_to);
+create index broker_clients_phone_idx on broker_clients(phone);
 create index tasks_assigned_to_idx on tasks(assigned_to);
 create index tasks_due_date_idx on tasks(due_date);
 create index units_project_id_idx on units(project_id);
@@ -133,6 +144,7 @@ end;
 $$;
 
 create trigger leads_set_updated_at before update on leads for each row execute function set_updated_at();
+create trigger broker_clients_set_updated_at before update on broker_clients for each row execute function set_updated_at();
 create trigger tasks_set_updated_at before update on tasks for each row execute function set_updated_at();
 
 create or replace function current_user_role()
@@ -159,6 +171,7 @@ alter table profiles enable row level security;
 alter table projects enable row level security;
 alter table units enable row level security;
 alter table leads enable row level security;
+alter table broker_clients enable row level security;
 alter table lead_activities enable row level security;
 alter table tasks enable row level security;
 
@@ -222,6 +235,36 @@ with check (
 
 create policy "leads management delete"
 on leads for delete
+to authenticated
+using (is_admin_or_manager());
+
+create policy "broker clients role based read"
+on broker_clients for select
+to authenticated
+using (
+  current_user_role() in ('admin', 'manager', 'secretary')
+  or assigned_to = auth.uid()
+);
+
+create policy "broker clients secretary and management insert"
+on broker_clients for insert
+to authenticated
+with check (current_user_role() in ('admin', 'manager', 'secretary'));
+
+create policy "broker clients role based update"
+on broker_clients for update
+to authenticated
+using (
+  current_user_role() in ('admin', 'manager', 'secretary')
+  or assigned_to = auth.uid()
+)
+with check (
+  current_user_role() in ('admin', 'manager', 'secretary')
+  or assigned_to = auth.uid()
+);
+
+create policy "broker clients management delete"
+on broker_clients for delete
 to authenticated
 using (is_admin_or_manager());
 

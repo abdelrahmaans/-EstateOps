@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth.guard';
 import { Login } from './features/auth/login';
+import { BrokerClientsPage } from './features/broker-clients/broker-clients-page';
 import { CalendarPage } from './features/calendar/calendar-page';
 import { Dashboard } from './features/dashboard/dashboard';
 import { LeadDetail } from './features/leads/lead-detail';
@@ -20,6 +21,7 @@ export const routes: Routes = [
       { path: '', component: Dashboard },
       { path: 'leads', component: LeadsList },
       { path: 'leads/:id', component: LeadDetail },
+      { path: 'broker-clients', component: BrokerClientsPage },
       { path: 'projects', component: ProjectsPage },
       { path: 'units', component: UnitsPage },
       { path: 'tasks', component: TasksPage },

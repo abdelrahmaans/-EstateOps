@@ -17,9 +17,6 @@ import { labelKey } from '../../shared/status-label';
         <h2>{{ lead()?.name ?? ('leads.detail' | t) }}</h2>
         <p>{{ lead()?.phone }}</p>
       </div>
-      @if (lead()) {
-        <span class="badge">{{ buyerStatusKey(lead()?.buyer_status ?? null) | t }}</span>
-      }
     </section>
 
     @if (error()) { <p class="state error" role="alert">{{ error() }}</p> }
@@ -34,11 +31,8 @@ import { labelKey } from '../../shared/status-label';
             <div><dt>{{ 'leads.buyerPurpose' | t }}</dt><dd>{{ purposeKey(currentLead.buyer_purpose) | t }}</dd></div>
             <div><dt>{{ 'leads.paymentPlan' | t }}</dt><dd>{{ paymentKey(currentLead.payment_plan) | t }}</dd></div>
             <div><dt>{{ 'leads.desiredArea' | t }}</dt><dd>{{ currentLead.desired_area ?? ('common.none' | t) }}</dd></div>
-            <div><dt>{{ 'leads.assignedTo' | t }}</dt><dd>{{ currentLead.assignee?.full_name ?? ('common.unassigned' | t) }}</dd></div>
             <div><dt>{{ 'leads.budget' | t }}</dt><dd>{{ currentLead.budget ?? ('common.none' | t) }}</dd></div>
             <div><dt>{{ 'leads.nextFollowUp' | t }}</dt><dd>{{ currentLead.next_follow_up_date ?? ('common.none' | t) }}</dd></div>
-            <div class="span-2"><dt>{{ 'leads.callResult' | t }}</dt><dd>{{ currentLead.call_result ?? ('common.none' | t) }}</dd></div>
-            <div class="span-2"><dt>{{ 'leads.clientRecommendations' | t }}</dt><dd>{{ currentLead.client_recommendations ?? ('common.none' | t) }}</dd></div>
             <div class="span-2"><dt>{{ 'leads.notes' | t }}</dt><dd>{{ currentLead.notes ?? ('common.none' | t) }}</dd></div>
           </dl>
         </article>
@@ -100,7 +94,6 @@ export class LeadDetail {
     }
   }
 
-  protected buyerStatusKey(status: string | null): string { return labelKey('buyerStatuses', status); }
   protected sourceKey(source: string | null): string { return labelKey('leadSources', source); }
   protected sideKey(side: string | null): string { return labelKey('nileSides', side); }
   protected purposeKey(purpose: string | null): string { return labelKey('buyerPurposes', purpose); }

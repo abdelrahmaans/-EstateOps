@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ActivityType, BuyerPurpose, BuyerStatus, Lead, LeadActivity, LeadSource, NileSide, PaymentPlan } from './models';
+import { ActivityType, BuyerPurpose, Lead, LeadActivity, LeadSource, NileSide, PaymentPlan } from './models';
 import { SupabaseService } from './supabase.service';
 
 export interface LeadFilters {
@@ -7,8 +7,6 @@ export interface LeadFilters {
   desiredNileSide?: NileSide | '';
   buyerPurpose?: BuyerPurpose | '';
   paymentPlan?: PaymentPlan | '';
-  buyerStatus?: BuyerStatus | '';
-  assignedTo?: string;
   minDesiredArea?: number | null;
   maxDesiredArea?: number | null;
 }
@@ -36,12 +34,6 @@ export class LeadsService {
     }
     if (filters.paymentPlan) {
       query = query.eq('payment_plan', filters.paymentPlan);
-    }
-    if (filters.buyerStatus) {
-      query = query.eq('buyer_status', filters.buyerStatus);
-    }
-    if (filters.assignedTo) {
-      query = query.eq('assigned_to', filters.assignedTo);
     }
     if (filters.minDesiredArea !== null && filters.minDesiredArea !== undefined) {
       query = query.gte('desired_area', filters.minDesiredArea);

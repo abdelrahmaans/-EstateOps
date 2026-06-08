@@ -217,16 +217,12 @@ insert into leads (
   buyer_purpose,
   desired_area,
   payment_plan,
-  call_result,
-  buyer_status,
-  assigned_to,
-  client_recommendations,
   notes,
   next_follow_up_date
 ) values
-  ('20000000-0000-0000-0000-000000000001', 'Omar Hassan', '+201001112233', null, 'social', null, 5000000, 'east', 'personal_use', 135, 'installment', 'Asked for ready-to-deliver apartment options.', 'interested', '00000000-0000-0000-0000-000000000004', 'Show east Nile apartments with elevator and full finishing.', 'Interested in 3-bedroom apartment.', current_date),
-  ('20000000-0000-0000-0000-000000000002', 'Mona Ali', '+201002223344', null, 'company', null, 6500000, 'west', 'investment', 90, 'cash', 'Prefers commercial or compact unit.', 'visited', '00000000-0000-0000-0000-000000000004', 'Recommend west Nile ready units near Corniche.', 'Asked for investment options.', current_date + 2),
-  ('20000000-0000-0000-0000-000000000003', 'Youssef Samir', '+201003334455', null, 'relations', null, 16000000, 'west', 'personal_use', 250, 'cash', 'Needs family unit and accepted inspection.', 'inspection_done', null, 'Recommend larger west Nile properties.', 'Villa inquiry.', current_date - 1)
+  ('20000000-0000-0000-0000-000000000001', 'Omar Hassan', '+201001112233', null, 'social', null, 5000000, 'east', 'personal_use', 135, 'installment', 'Interested in 3-bedroom apartment.', current_date),
+  ('20000000-0000-0000-0000-000000000002', 'Mona Ali', '+201002223344', null, 'company', null, 6500000, 'west', 'investment', 90, 'cash', 'Asked for investment options.', current_date + 2),
+  ('20000000-0000-0000-0000-000000000003', 'Youssef Samir', '+201003334455', null, 'relations', null, 16000000, 'west', 'personal_use', 250, 'cash', 'Villa inquiry.', current_date - 1)
 on conflict (id) do update set
   name = excluded.name,
   phone = excluded.phone,
@@ -238,12 +234,28 @@ on conflict (id) do update set
   buyer_purpose = excluded.buyer_purpose,
   desired_area = excluded.desired_area,
   payment_plan = excluded.payment_plan,
-  call_result = excluded.call_result,
-  buyer_status = excluded.buyer_status,
-  assigned_to = excluded.assigned_to,
-  client_recommendations = excluded.client_recommendations,
   notes = excluded.notes,
   next_follow_up_date = excluded.next_follow_up_date;
+
+insert into broker_clients (
+  id,
+  name,
+  phone,
+  call_result,
+  status,
+  assigned_to,
+  client_recommendations
+) values
+  ('50000000-0000-0000-0000-000000000001', 'Karim Nabil', '+201004445566', 'Interested in ready-to-deliver east Nile apartment.', 'interested', '00000000-0000-0000-0000-000000000004', 'Recommend fully finished units with elevator.'),
+  ('50000000-0000-0000-0000-000000000002', 'Sara Wael', '+201005556677', 'Not ready to buy this quarter.', 'not_interested', '00000000-0000-0000-0000-000000000004', 'Follow up next quarter with installment options.'),
+  ('50000000-0000-0000-0000-000000000003', 'Mahmoud Essam', '+201006667788', 'Visited and requested inspection for west Nile unit.', 'inspection_done', '00000000-0000-0000-0000-000000000002', 'Show Corniche and Rawda units within cash budget.')
+on conflict (id) do update set
+  name = excluded.name,
+  phone = excluded.phone,
+  call_result = excluded.call_result,
+  status = excluded.status,
+  assigned_to = excluded.assigned_to,
+  client_recommendations = excluded.client_recommendations;
 
 insert into lead_activities (id, lead_id, type, note, created_by) values
   ('30000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'call', 'Initial qualification call completed.', '00000000-0000-0000-0000-000000000004'),
