@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
@@ -9,7 +10,7 @@ import { ThemeToggle } from '../../shared/components/theme-toggle/theme-toggle';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, TranslatePipe, LanguageSwitcher, ThemeToggle],
+  imports: [NgOptimizedImage, ReactiveFormsModule, TranslatePipe, LanguageSwitcher, ThemeToggle],
   template: `
     <main class="auth-page">
       <section class="auth-panel" aria-labelledby="loginTitle">
@@ -18,7 +19,7 @@ import { ThemeToggle } from '../../shared/components/theme-toggle/theme-toggle';
           <app-theme-toggle />
         </div>
         <div class="brand auth-brand">
-          <span class="brand-mark" aria-hidden="true">FL</span>
+          <img class="brand-mark" ngSrc="assets/brand/future-line-logo.svg" width="52" height="52" alt="" priority />
           <span>
             <strong>{{ 'layout.brand' | t }}</strong>
             <small>{{ 'layout.subtitle' | t }}</small>

@@ -52,40 +52,13 @@ a { color: inherit; }
 .sidebar { background: var(--surface); border-inline-end: 1px solid var(--border); padding: 24px; position: sticky; top: 0; height: 100dvh; }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 .brand-mark {
-  display: inline-grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
+  display: block;
+  width: 52px;
+  height: 52px;
   border-radius: 8px;
-  background: var(--primary);
-  color: white;
-  font-weight: 900;
-  letter-spacing: 0;
-  position: relative;
-  overflow: hidden;
+  object-fit: cover;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--primary) 20%, transparent);
 }
-.brand-mark::before {
-  content: "";
-  position: absolute;
-  inset: 8px auto 8px 9px;
-  width: 9px;
-  border: 3px solid currentColor;
-  border-right: 0;
-  transform: skewY(-12deg);
-  opacity: .9;
-}
-.brand-mark::after {
-  content: "";
-  position: absolute;
-  right: 8px;
-  top: 10px;
-  width: 15px;
-  height: 22px;
-  border-top: 5px solid currentColor;
-  border-bottom: 5px solid currentColor;
-  opacity: .9;
-}
-.brand-mark { font-size: .72rem; padding-top: 19px; }
 .brand small, .eyebrow, .user-chip, .stack-list span, .timeline small { color: var(--muted); }
 .brand strong, .brand small { display: block; }
 .nav-list { display: grid; gap: 6px; margin-top: 28px; }

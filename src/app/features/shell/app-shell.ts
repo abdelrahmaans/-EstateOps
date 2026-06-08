@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { I18nService } from '../../core/i18n/i18n.service';
@@ -15,12 +16,12 @@ interface NavItem {
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslatePipe, LanguageSwitcher, ThemeToggle],
+  imports: [NgOptimizedImage, RouterOutlet, RouterLink, RouterLinkActive, TranslatePipe, LanguageSwitcher, ThemeToggle],
   template: `
     <div class="app-shell" [class.sidebar-open]="sidebarOpen()">
       <aside class="sidebar" [attr.aria-label]="'layout.sidebar' | t">
         <a class="brand" routerLink="/">
-          <span class="brand-mark" aria-hidden="true">FL</span>
+          <img class="brand-mark" ngSrc="assets/brand/future-line-logo.svg" width="52" height="52" alt="" priority />
           <span>
             <strong>{{ 'layout.brand' | t }}</strong>
             <small>{{ 'layout.subtitle' | t }}</small>
