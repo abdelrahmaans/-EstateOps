@@ -9,6 +9,7 @@ import { Lead, Profile, Task, TaskPriority, TaskStatus } from '../../core/models
 import { LeadsService } from '../../core/leads.service';
 import { TaskPayload, TasksService } from '../../core/tasks.service';
 import { UsersService } from '../../core/users.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog.service';
 import { labelKey } from '../../shared/status-label';
 
 @Component({
@@ -26,7 +27,7 @@ import { labelKey } from '../../shared/status-label';
     @if (error()) { <p class="state error" role="alert">{{ error() }}</p> }
     <div class="table-wrap"><table><thead><tr><th>{{ 'tasks.titleField' | t }}</th><th>{{ 'tasks.createdBy' | t }}</th><th>{{ 'tasks.assignedTo' | t }}</th><th>{{ 'tasks.lead' | t }}</th><th>{{ 'tasks.dueDate' | t }}</th><th>{{ 'tasks.priority' | t }}</th><th>{{ 'tasks.status' | t }}</th><th>{{ 'common.createdAt' | t }}</th><th>{{ 'common.updatedAt' | t }}</th><th>{{ 'common.actions' | t }}</th></tr></thead><tbody>
       @for (task of tasks(); track task.id) {
-        <tr><td>{{ task.title }}</td><td>{{ task.creator?.full_name ?? ('common.none' | t) }}</td><td>{{ task.assignee?.full_name ?? ('common.unassigned' | t) }}</td><td>{{ task.lead?.name ?? ('common.none' | t) }}</td><td>{{ task.due_date ?? ('common.none' | t) }}</td><td><span class="badge">{{ priorityKey(task.priority) | t }}</span></td><td><span class="badge" [class]="task.status">{{ statusKey(task.status) | t }}</span></td><td>{{ task.created_at | date:'short' }}</td><td>{{ task.updated_at | date:'short' }}</td><td><button class="link-button" type="button" (click)="startEdit(task)">{{ 'common.edit' | t }}</button></td></tr>
+        <tr><td>{{ task.title }}</td><td>{{ task.creator?.full_name ?? ('common.none' | t) }}</td><td>{{ task.assignee?.full_name ?? ('common.unassigned' | t) }}</td><td>{{ task.lead?.name ?? ('common.none' | t) }}</td><td>{{ task.due_date ?? ('common.none' | t) }}</td><td><span class="badge">{{ priorityKey(task.priority) | t }}</span></td><td><span class="badge" [class]="task.status">{{ statusKey(task.status) | t }}</span></td><td>{{ task.created_at | date:'short' }}</td><td>{{ task.updated_at | date:'short' }}</td><td><div class="table-actions"><button class="icon-button table-action" type="button" (click)="startEdit(task)" [attr.aria-label]="'common.edit' | t">✎</button><button class="icon-button table-action danger-action" type="button" (click)="deleteTask(task)" [attr.aria-label]="'common.delete' | t">×</button></div></td></tr>
       } @empty { <tr><td colspan="10" class="empty">{{ 'common.empty' | t }}</td></tr> }
     </tbody></table></div>
     @if (editing()) {
@@ -50,6 +51,7 @@ export class TasksPage {
   private readonly usersService = inject(UsersService);
   private readonly leadsService = inject(LeadsService);
   private readonly fb = inject(FormBuilder);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly tasks = signal<Task[]>([]);
   protected readonly users = signal<Profile[]>([]);
@@ -71,6 +73,18 @@ export class TasksPage {
   protected startCreate(): void { this.editing.set('new'); this.form.reset({ title: '', description: '', assigned_to: '', related_lead_id: '', due_date: '', priority: 'medium', status: 'pending' }); }
   protected startEdit(task: Task): void { this.editing.set(task); this.form.setValue({ title: task.title, description: task.description ?? '', assigned_to: task.assigned_to ?? '', related_lead_id: task.related_lead_id ?? '', due_date: task.due_date ?? '', priority: task.priority, status: task.status }); }
   protected async save(): Promise<void> { const raw = this.form.getRawValue(); const payload: TaskPayload = { ...raw, description: raw.description || null, assigned_to: raw.assigned_to || null, related_lead_id: raw.related_lead_id || null, due_date: raw.due_date || null }; try { const editing = this.editing(); if (editing === 'new') { await this.service.create(payload); } else if (editing) { await this.service.update(editing.id, payload); } this.cancel(); await this.load(); } catch (error) { this.error.set(toErrorMessage(error)); } }
+  protected async deleteTask(task: Task): Promise<void> {
+    if (!await this.confirmDialog.confirm()) {
+      return;
+    }
+
+    try {
+      await this.service.remove(task.id);
+      await this.load();
+    } catch (error) {
+      this.error.set(toErrorMessage(error));
+    }
+  }
   protected clearFilters(): void { this.filters.reset({ updatedDate: '' }, { emitEvent: false }); void this.load(); }
   protected cancel(): void { this.editing.set(null); }
   protected statusKey(status: string): string { return labelKey('taskStatuses', status); }
