@@ -7,6 +7,7 @@ export interface LeadFilters {
   desiredNileSide?: NileSide | '';
   buyerPurpose?: BuyerPurpose | '';
   paymentPlan?: PaymentPlan | '';
+  assignedTo?: string;
   minDesiredArea?: number | null;
   maxDesiredArea?: number | null;
 }
@@ -34,6 +35,9 @@ export class LeadsService {
     }
     if (filters.paymentPlan) {
       query = query.eq('payment_plan', filters.paymentPlan);
+    }
+    if (filters.assignedTo) {
+      query = query.eq('assigned_to', filters.assignedTo);
     }
     if (filters.minDesiredArea !== null && filters.minDesiredArea !== undefined) {
       query = query.gte('desired_area', filters.minDesiredArea);

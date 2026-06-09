@@ -5,8 +5,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs';
 import { toErrorMessage } from '../../core/errors';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { BuyerPurpose, Lead, LeadSource, NileSide, PaymentPlan } from '../../core/models';
+import { BuyerPurpose, Lead, LeadSource, NileSide, PaymentPlan, Profile } from '../../core/models';
 import { LeadPayload, LeadsService } from '../../core/leads.service';
+import { UsersService } from '../../core/users.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog.service';
 import { labelKey } from '../../shared/status-label';
 
@@ -39,6 +40,10 @@ import { labelKey } from '../../shared/status-label';
         <option value="">{{ 'units.allPaymentPlans' | t }}</option>
         @for (plan of paymentPlans; track plan) { <option [value]="plan">{{ paymentKey(plan) | t }}</option> }
       </select>
+      <select formControlName="assignedTo" [attr.aria-label]="'leads.assignedTo' | t">
+        <option value="">{{ 'common.allUsers' | t }}</option>
+        @for (user of salesUsers(); track user.id) { <option [value]="user.id">{{ user.full_name }}</option> }
+      </select>
       <label class="filter-field">
         <span>{{ 'leads.minDesiredArea' | t }}</span>
         <input type="number" formControlName="minDesiredArea" [attr.aria-label]="'leads.minDesiredArea' | t" />
@@ -64,6 +69,7 @@ import { labelKey } from '../../shared/status-label';
             <th>{{ 'leads.desiredArea' | t }}</th>
             <th>{{ 'leads.paymentPlan' | t }}</th>
             <th>{{ 'leads.budget' | t }}</th>
+            <th>{{ 'leads.assignedTo' | t }}</th>
             <th>{{ 'common.actions' | t }}</th>
           </tr>
         </thead>
@@ -78,6 +84,7 @@ import { labelKey } from '../../shared/status-label';
               <td>{{ lead.desired_area ?? ('common.none' | t) }}</td>
               <td>{{ paymentKey(lead.payment_plan) | t }}</td>
               <td>{{ lead.budget ?? ('common.none' | t) }}</td>
+              <td>{{ lead.assignee?.full_name ?? ('common.unassigned' | t) }}</td>
               <td>
                 <div class="table-actions">
                   <button class="icon-button table-action" type="button" (click)="startEdit(lead)" [attr.aria-label]="'common.edit' | t">✎</button>
@@ -86,7 +93,7 @@ import { labelKey } from '../../shared/status-label';
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="9" class="empty">{{ 'common.empty' | t }}</td></tr>
+            <tr><td colspan="10" class="empty">{{ 'common.empty' | t }}</td></tr>
           }
         </tbody>
       </table>
@@ -102,6 +109,7 @@ import { labelKey } from '../../shared/status-label';
           <label><span>{{ 'leads.desiredNileSide' | t }}</span><select formControlName="desired_nile_side">@for (side of nileSides; track side) { <option [value]="side">{{ sideKey(side) | t }}</option> }</select></label>
           <label><span>{{ 'leads.buyerPurpose' | t }}</span><select formControlName="buyer_purpose">@for (purpose of buyerPurposes; track purpose) { <option [value]="purpose">{{ purposeKey(purpose) | t }}</option> }</select></label>
           <label><span>{{ 'leads.paymentPlan' | t }}</span><select formControlName="payment_plan">@for (plan of paymentPlans; track plan) { <option [value]="plan">{{ paymentKey(plan) | t }}</option> }</select></label>
+          <label><span>{{ 'leads.assignedTo' | t }}</span><select formControlName="assigned_to"><option value="">{{ 'common.unassigned' | t }}</option>@for (user of salesUsers(); track user.id) { <option [value]="user.id">{{ user.full_name }}</option> }</select></label>
           <label><span>{{ 'leads.desiredArea' | t }}</span><input type="number" formControlName="desired_area" /></label>
           <label><span>{{ 'leads.budget' | t }}</span><input type="number" formControlName="budget" /></label>
           <label><span>{{ 'leads.nextFollowUp' | t }}</span><input type="date" formControlName="next_follow_up_date" /></label>
@@ -119,9 +127,11 @@ import { labelKey } from '../../shared/status-label';
 export class LeadsList {
   private readonly fb = inject(FormBuilder);
   private readonly leadsService = inject(LeadsService);
+  private readonly usersService = inject(UsersService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly leads = signal<Lead[]>([]);
+  protected readonly users = signal<Profile[]>([]);
   protected readonly editing = signal<Lead | 'new' | null>(null);
   protected readonly error = signal('');
   protected readonly leadSources: LeadSource[] = ['social', 'company', 'relations'];
@@ -134,6 +144,7 @@ export class LeadsList {
     desiredNileSide: '',
     buyerPurpose: '',
     paymentPlan: '',
+    assignedTo: '',
     minDesiredArea: 0,
     maxDesiredArea: 0,
   });
@@ -146,6 +157,7 @@ export class LeadsList {
     buyer_purpose: 'personal_use' as BuyerPurpose,
     desired_area: 0,
     payment_plan: 'cash' as PaymentPlan,
+    assigned_to: '',
     budget: 0,
     notes: '',
     next_follow_up_date: '',
@@ -155,7 +167,12 @@ export class LeadsList {
     this.filters.valueChanges
       .pipe(debounceTime(250), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => void this.load());
+    void this.loadSupport();
     void this.load();
+  }
+
+  protected salesUsers(): Profile[] {
+    return this.users().filter((user) => user.role === 'sales' || user.role === 'manager');
   }
 
   protected async load(): Promise<void> {
@@ -166,6 +183,7 @@ export class LeadsList {
         desiredNileSide: raw.desiredNileSide as NileSide | '',
         buyerPurpose: raw.buyerPurpose as BuyerPurpose | '',
         paymentPlan: raw.paymentPlan as PaymentPlan | '',
+        assignedTo: raw.assignedTo,
         minDesiredArea: raw.minDesiredArea || null,
         maxDesiredArea: raw.maxDesiredArea || null,
       }));
@@ -184,6 +202,7 @@ export class LeadsList {
       buyer_purpose: 'personal_use',
       desired_area: 0,
       payment_plan: 'cash',
+      assigned_to: '',
       budget: 0,
       notes: '',
       next_follow_up_date: '',
@@ -200,6 +219,7 @@ export class LeadsList {
       buyer_purpose: lead.buyer_purpose ?? 'personal_use',
       desired_area: lead.desired_area ?? 0,
       payment_plan: lead.payment_plan ?? 'cash',
+      assigned_to: lead.assigned_to ?? '',
       budget: lead.budget ?? 0,
       notes: lead.notes ?? '',
       next_follow_up_date: lead.next_follow_up_date ?? '',
@@ -213,7 +233,7 @@ export class LeadsList {
       email: null,
       interested_project_id: null,
       status: 'new',
-      assigned_to: null,
+      assigned_to: raw.assigned_to || null,
       budget: raw.budget || null,
       desired_area: raw.desired_area || null,
       notes: raw.notes || null,
@@ -262,12 +282,17 @@ export class LeadsList {
   protected purposeKey(purpose: string | null): string { return labelKey('buyerPurposes', purpose); }
   protected paymentKey(plan: string | null): string { return labelKey('paymentPlans', plan); }
 
+  private async loadSupport(): Promise<void> {
+    this.users.set(await this.usersService.list());
+  }
+
   private resetFilters(): void {
     this.filters.reset({
       source: '',
       desiredNileSide: '',
       buyerPurpose: '',
       paymentPlan: '',
+      assignedTo: '',
       minDesiredArea: 0,
       maxDesiredArea: 0,
     }, { emitEvent: false });
