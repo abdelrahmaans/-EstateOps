@@ -71,7 +71,7 @@ export class AppShell {
     { path: '/broker-clients', labelKey: 'nav.brokerClients', area: 'leads' },
     { path: '/projects', labelKey: 'nav.projects', area: 'salesData' },
     { path: '/units', labelKey: 'nav.units', area: 'salesData' },
-    { path: '/tasks', labelKey: 'nav.tasks', area: 'tasks' },
+    { path: '/tasks', labelKey: 'nav.tasks', area: 'salesData' },
   ];
 
   protected readonly visibleNav = computed(() => {
