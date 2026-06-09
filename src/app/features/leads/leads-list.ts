@@ -46,6 +46,10 @@ import { labelKey } from '../../shared/status-label';
         @for (user of salesUsers(); track user.id) { <option [value]="user.id">{{ user.full_name }}</option> }
       </select>
       <label class="filter-field">
+        <span>{{ 'common.updatedAt' | t }}</span>
+        <input type="date" formControlName="updatedDate" [attr.aria-label]="'common.updatedAt' | t" />
+      </label>
+      <label class="filter-field">
         <span>{{ 'leads.minDesiredArea' | t }}</span>
         <input type="number" formControlName="minDesiredArea" [attr.aria-label]="'leads.minDesiredArea' | t" />
       </label>
@@ -150,6 +154,7 @@ export class LeadsList {
     buyerPurpose: '',
     paymentPlan: '',
     assignedTo: '',
+    updatedDate: '',
     minDesiredArea: 0,
     maxDesiredArea: 0,
   });
@@ -189,6 +194,7 @@ export class LeadsList {
         buyerPurpose: raw.buyerPurpose as BuyerPurpose | '',
         paymentPlan: raw.paymentPlan as PaymentPlan | '',
         assignedTo: raw.assignedTo,
+        updatedDate: raw.updatedDate,
         minDesiredArea: raw.minDesiredArea || null,
         maxDesiredArea: raw.maxDesiredArea || null,
       }));
@@ -298,6 +304,7 @@ export class LeadsList {
       buyerPurpose: '',
       paymentPlan: '',
       assignedTo: '',
+      updatedDate: '',
       minDesiredArea: 0,
       maxDesiredArea: 0,
     }, { emitEvent: false });

@@ -19,6 +19,7 @@ export interface UnitFilters {
   maxPrice?: number | null;
   minArea?: number | null;
   maxArea?: number | null;
+  updatedDate?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -76,6 +77,9 @@ export class UnitsService {
     if (filters.maxArea !== null && filters.maxArea !== undefined) {
       query = query.lte('area', filters.maxArea);
     }
+    if (filters.updatedDate) {
+      query = query.gte('updated_at', `${filters.updatedDate}T00:00:00`).lt('updated_at', `${this.nextDate(filters.updatedDate)}T00:00:00`);
+    }
 
     const { data, error } = await query;
     if (error) {
@@ -104,5 +108,10 @@ export class UnitsService {
     if (error) {
       throw error;
     }
+  }
+
+  private nextDate(date: string): string {
+    const [year, month, day] = date.split('-').map(Number) as [number, number, number];
+    return new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10);
   }
 }

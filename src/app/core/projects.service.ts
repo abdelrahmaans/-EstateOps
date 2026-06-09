@@ -4,12 +4,22 @@ import { SupabaseService } from './supabase.service';
 
 export type ProjectPayload = Omit<Project, 'id' | 'created_at' | 'updated_at'>;
 
+export interface ProjectFilters {
+  updatedDate?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ProjectsService {
   private readonly supabase = inject(SupabaseService).client;
 
-  async list(): Promise<Project[]> {
-    const { data, error } = await this.supabase.from('projects').select('*').order('name');
+  async list(filters: ProjectFilters = {}): Promise<Project[]> {
+    let query = this.supabase.from('projects').select('*').order('name');
+
+    if (filters.updatedDate) {
+      query = query.gte('updated_at', `${filters.updatedDate}T00:00:00`).lt('updated_at', `${this.nextDate(filters.updatedDate)}T00:00:00`);
+    }
+
+    const { data, error } = await query;
     if (error) {
       throw error;
     }
@@ -36,5 +46,10 @@ export class ProjectsService {
     if (error) {
       throw error;
     }
+  }
+
+  private nextDate(date: string): string {
+    const [year, month, day] = date.split('-').map(Number) as [number, number, number];
+    return new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10);
   }
 }

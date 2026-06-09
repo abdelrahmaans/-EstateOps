@@ -6,6 +6,7 @@ export interface BrokerClientFilters {
   status?: BrokerClientStatus | '';
   assignedTo?: string;
   phone?: string;
+  updatedDate?: string;
 }
 
 export type BrokerClientPayload = Omit<BrokerClient, 'id' | 'created_at' | 'updated_at' | 'assignee'>;
@@ -28,6 +29,9 @@ export class BrokerClientsService {
     }
     if (filters.phone) {
       query = query.ilike('phone', `%${filters.phone}%`);
+    }
+    if (filters.updatedDate) {
+      query = query.gte('updated_at', `${filters.updatedDate}T00:00:00`).lt('updated_at', `${this.nextDate(filters.updatedDate)}T00:00:00`);
     }
 
     const { data, error } = await query;
@@ -57,5 +61,10 @@ export class BrokerClientsService {
     if (error) {
       throw error;
     }
+  }
+
+  private nextDate(date: string): string {
+    const [year, month, day] = date.split('-').map(Number) as [number, number, number];
+    return new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10);
   }
 }

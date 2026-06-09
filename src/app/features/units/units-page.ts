@@ -81,6 +81,10 @@ import { labelKey } from '../../shared/status-label';
         <span>{{ 'units.maxArea' | t }}</span>
         <input type="number" formControlName="maxArea" [attr.aria-label]="'units.maxArea' | t" />
       </label>
+      <label class="filter-field">
+        <span>{{ 'common.updatedAt' | t }}</span>
+        <input type="date" formControlName="updatedDate" [attr.aria-label]="'common.updatedAt' | t" />
+      </label>
       <button class="button ghost" type="button" (click)="clearFilters()">{{ 'common.clear' | t }}</button>
     </form>
 
@@ -199,6 +203,7 @@ export class UnitsPage {
     maxPrice: 0,
     minArea: 0,
     maxArea: 0,
+    updatedDate: '',
   });
 
   protected readonly form = this.fb.nonNullable.group({
@@ -247,6 +252,7 @@ export class UnitsPage {
       maxPrice: raw.maxPrice || null,
       minArea: raw.minArea || null,
       maxArea: raw.maxArea || null,
+      updatedDate: raw.updatedDate,
     };
 
     try {
@@ -405,6 +411,7 @@ export class UnitsPage {
       maxPrice: 0,
       minArea: 0,
       maxArea: 0,
+      updatedDate: '',
     }, { emitEvent: false });
   }
 }

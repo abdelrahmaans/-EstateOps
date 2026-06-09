@@ -40,6 +40,10 @@ import { labelKey } from '../../shared/status-label';
         <span>{{ 'brokerClients.phoneSearch' | t }}</span>
         <input formControlName="phone" [attr.aria-label]="'brokerClients.phoneSearch' | t" />
       </label>
+      <label class="filter-field">
+        <span>{{ 'common.updatedAt' | t }}</span>
+        <input type="date" formControlName="updatedDate" [attr.aria-label]="'common.updatedAt' | t" />
+      </label>
       <button class="button ghost" type="button" (click)="clearFilters()">{{ 'common.clear' | t }}</button>
     </form>
 
@@ -122,6 +126,7 @@ export class BrokerClientsPage {
     status: '',
     assignedTo: '',
     phone: '',
+    updatedDate: '',
   });
 
   protected readonly form = this.fb.nonNullable.group({
@@ -152,6 +157,7 @@ export class BrokerClientsPage {
         status: raw.status as BrokerClientStatus | '',
         assignedTo: raw.assignedTo,
         phone: raw.phone.trim(),
+        updatedDate: raw.updatedDate,
       }));
     } catch (error) {
       this.error.set(toErrorMessage(error));
@@ -239,6 +245,6 @@ export class BrokerClientsPage {
   }
 
   private resetFilters(): void {
-    this.filters.reset({ status: '', assignedTo: '', phone: '' }, { emitEvent: false });
+    this.filters.reset({ status: '', assignedTo: '', phone: '', updatedDate: '' }, { emitEvent: false });
   }
 }

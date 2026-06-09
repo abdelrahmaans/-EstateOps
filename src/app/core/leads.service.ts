@@ -8,6 +8,7 @@ export interface LeadFilters {
   buyerPurpose?: BuyerPurpose | '';
   paymentPlan?: PaymentPlan | '';
   assignedTo?: string;
+  updatedDate?: string;
   minDesiredArea?: number | null;
   maxDesiredArea?: number | null;
 }
@@ -38,6 +39,9 @@ export class LeadsService {
     }
     if (filters.assignedTo) {
       query = query.eq('assigned_to', filters.assignedTo);
+    }
+    if (filters.updatedDate) {
+      query = query.gte('updated_at', `${filters.updatedDate}T00:00:00`).lt('updated_at', `${this.nextDate(filters.updatedDate)}T00:00:00`);
     }
     if (filters.minDesiredArea !== null && filters.minDesiredArea !== undefined) {
       query = query.gte('desired_area', filters.minDesiredArea);
@@ -116,5 +120,10 @@ export class LeadsService {
     if (error) {
       throw error;
     }
+  }
+
+  private nextDate(date: string): string {
+    const [year, month, day] = date.split('-').map(Number) as [number, number, number];
+    return new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10);
   }
 }
