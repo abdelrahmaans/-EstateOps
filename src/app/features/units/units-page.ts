@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,7 +13,7 @@ import { labelKey } from '../../shared/status-label';
 
 @Component({
   selector: 'app-units-page',
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [DatePipe, ReactiveFormsModule, TranslatePipe],
   template: `
     <section class="page-header">
       <div>
@@ -98,6 +99,7 @@ import { labelKey } from '../../shared/status-label';
             <th>{{ 'units.finishing' | t }}</th>
             <th>{{ 'units.paymentPlan' | t }}</th>
             <th>{{ 'units.status' | t }}</th>
+            <th>{{ 'common.createdAt' | t }}</th>
             <th>{{ 'common.actions' | t }}</th>
           </tr>
         </thead>
@@ -113,6 +115,7 @@ import { labelKey } from '../../shared/status-label';
               <td>{{ finishingKey(unit.finishing) | t }}</td>
               <td>{{ paymentKey(unit.payment_plan) | t }}</td>
               <td><span class="badge" [class]="unit.status">{{ statusKey(unit.status) | t }}</span></td>
+              <td>{{ unit.created_at | date:'short' }}</td>
               <td>
                 <div class="table-actions">
                   <button class="icon-button table-action" type="button" (click)="startEdit(unit)" [attr.aria-label]="'common.edit' | t">✎</button>
@@ -121,7 +124,7 @@ import { labelKey } from '../../shared/status-label';
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="10" class="empty">{{ 'common.empty' | t }}</td></tr>
+            <tr><td colspan="11" class="empty">{{ 'common.empty' | t }}</td></tr>
           }
         </tbody>
       </table>

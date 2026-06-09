@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -9,7 +10,7 @@ import { labelKey } from '../../shared/status-label';
 
 @Component({
   selector: 'app-lead-detail',
-  imports: [ReactiveFormsModule, RouterLink, TranslatePipe],
+  imports: [DatePipe, ReactiveFormsModule, RouterLink, TranslatePipe],
   template: `
     <section class="page-header">
       <div>
@@ -33,6 +34,8 @@ import { labelKey } from '../../shared/status-label';
             <div><dt>{{ 'leads.desiredArea' | t }}</dt><dd>{{ currentLead.desired_area ?? ('common.none' | t) }}</dd></div>
             <div><dt>{{ 'leads.budget' | t }}</dt><dd>{{ currentLead.budget ?? ('common.none' | t) }}</dd></div>
             <div><dt>{{ 'leads.nextFollowUp' | t }}</dt><dd>{{ currentLead.next_follow_up_date ?? ('common.none' | t) }}</dd></div>
+            <div><dt>{{ 'common.createdAt' | t }}</dt><dd>{{ currentLead.created_at | date:'short' }}</dd></div>
+            <div><dt>{{ 'common.updatedAt' | t }}</dt><dd>{{ currentLead.updated_at | date:'short' }}</dd></div>
             <div class="span-2"><dt>{{ 'leads.notes' | t }}</dt><dd>{{ currentLead.notes ?? ('common.none' | t) }}</dd></div>
           </dl>
         </article>
@@ -54,7 +57,7 @@ import { labelKey } from '../../shared/status-label';
             <li>
               <span class="badge">{{ activityKey(activity.type) | t }}</span>
               <p>{{ activity.note }}</p>
-              <small>{{ activity.creator?.full_name ?? ('auth.user' | t) }} · {{ activity.created_at }}</small>
+              <small>{{ activity.creator?.full_name ?? ('auth.user' | t) }} · {{ activity.created_at | date:'short' }}</small>
             </li>
           } @empty {
             <li class="empty">{{ 'activities.empty' | t }}</li>

@@ -32,7 +32,8 @@ create table projects (
   location text not null,
   description text,
   status project_status not null default 'active',
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 create table units (
@@ -56,7 +57,8 @@ create table units (
   notes text,
   owner_phone text,
   owner_name text,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 create table leads (
@@ -145,6 +147,8 @@ $$;
 
 create trigger leads_set_updated_at before update on leads for each row execute function set_updated_at();
 create trigger broker_clients_set_updated_at before update on broker_clients for each row execute function set_updated_at();
+create trigger projects_set_updated_at before update on projects for each row execute function set_updated_at();
+create trigger units_set_updated_at before update on units for each row execute function set_updated_at();
 create trigger tasks_set_updated_at before update on tasks for each row execute function set_updated_at();
 
 create or replace function current_user_role()

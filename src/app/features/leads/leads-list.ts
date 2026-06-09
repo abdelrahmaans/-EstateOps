@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -13,7 +14,7 @@ import { labelKey } from '../../shared/status-label';
 
 @Component({
   selector: 'app-leads-list',
-  imports: [ReactiveFormsModule, RouterLink, TranslatePipe],
+  imports: [DatePipe, ReactiveFormsModule, RouterLink, TranslatePipe],
   template: `
     <section class="page-header">
       <div>
@@ -70,6 +71,7 @@ import { labelKey } from '../../shared/status-label';
             <th>{{ 'leads.paymentPlan' | t }}</th>
             <th>{{ 'leads.budget' | t }}</th>
             <th>{{ 'leads.assignedTo' | t }}</th>
+            <th>{{ 'common.createdAt' | t }}</th>
             <th>{{ 'common.actions' | t }}</th>
           </tr>
         </thead>
@@ -85,6 +87,7 @@ import { labelKey } from '../../shared/status-label';
               <td>{{ paymentKey(lead.payment_plan) | t }}</td>
               <td>{{ lead.budget ?? ('common.none' | t) }}</td>
               <td>{{ lead.assignee?.full_name ?? ('common.unassigned' | t) }}</td>
+              <td>{{ lead.created_at | date:'short' }}</td>
               <td>
                 <div class="table-actions">
                   <button class="icon-button table-action" type="button" (click)="startEdit(lead)" [attr.aria-label]="'common.edit' | t">✎</button>
@@ -93,7 +96,7 @@ import { labelKey } from '../../shared/status-label';
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="10" class="empty">{{ 'common.empty' | t }}</td></tr>
+            <tr><td colspan="11" class="empty">{{ 'common.empty' | t }}</td></tr>
           }
         </tbody>
       </table>

@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,7 +13,7 @@ import { labelKey } from '../../shared/status-label';
 
 @Component({
   selector: 'app-broker-clients-page',
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [DatePipe, ReactiveFormsModule, TranslatePipe],
   template: `
     <section class="page-header">
       <div>
@@ -54,6 +55,7 @@ import { labelKey } from '../../shared/status-label';
             <th>{{ 'brokerClients.status' | t }}</th>
             <th>{{ 'brokerClients.assignedTo' | t }}</th>
             <th>{{ 'brokerClients.clientRecommendations' | t }}</th>
+            <th>{{ 'common.createdAt' | t }}</th>
             <th>{{ 'common.actions' | t }}</th>
           </tr>
         </thead>
@@ -66,6 +68,7 @@ import { labelKey } from '../../shared/status-label';
               <td><span class="badge">{{ statusKey(client.status) | t }}</span></td>
               <td>{{ client.assignee?.full_name ?? ('common.unassigned' | t) }}</td>
               <td>{{ client.client_recommendations ?? ('common.none' | t) }}</td>
+              <td>{{ client.created_at | date:'short' }}</td>
               <td>
                 <div class="table-actions">
                   <button class="icon-button table-action" type="button" (click)="startEdit(client)" [attr.aria-label]="'common.edit' | t">✎</button>
@@ -74,7 +77,7 @@ import { labelKey } from '../../shared/status-label';
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="7" class="empty">{{ 'common.empty' | t }}</td></tr>
+            <tr><td colspan="8" class="empty">{{ 'common.empty' | t }}</td></tr>
           }
         </tbody>
       </table>
