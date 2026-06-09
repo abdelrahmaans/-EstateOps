@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Project } from './models';
 import { SupabaseService } from './supabase.service';
 
-export type ProjectPayload = Omit<Project, 'id' | 'created_at'>;
+export type ProjectPayload = Omit<Project, 'id' | 'created_at' | 'updated_at'>;
 
 @Injectable({ providedIn: 'root' })
 export class ProjectsService {

@@ -72,6 +72,7 @@ import { labelKey } from '../../shared/status-label';
             <th>{{ 'leads.budget' | t }}</th>
             <th>{{ 'leads.assignedTo' | t }}</th>
             <th>{{ 'common.createdAt' | t }}</th>
+            <th>{{ 'common.updatedAt' | t }}</th>
             <th>{{ 'common.actions' | t }}</th>
           </tr>
         </thead>
@@ -88,6 +89,7 @@ import { labelKey } from '../../shared/status-label';
               <td>{{ lead.budget ?? ('common.none' | t) }}</td>
               <td>{{ lead.assignee?.full_name ?? ('common.unassigned' | t) }}</td>
               <td>{{ lead.created_at | date:'short' }}</td>
+              <td>{{ lead.updated_at | date:'short' }}</td>
               <td>
                 <div class="table-actions">
                   <button class="icon-button table-action" type="button" (click)="startEdit(lead)" [attr.aria-label]="'common.edit' | t">✎</button>
@@ -96,7 +98,7 @@ import { labelKey } from '../../shared/status-label';
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="11" class="empty">{{ 'common.empty' | t }}</td></tr>
+            <tr><td colspan="12" class="empty">{{ 'common.empty' | t }}</td></tr>
           }
         </tbody>
       </table>

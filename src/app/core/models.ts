@@ -33,6 +33,7 @@ export interface Project {
   description: string | null;
   status: ProjectStatus;
   created_at: string;
+  updated_at: string;
 }
 
 export interface Unit {
@@ -58,6 +59,7 @@ export interface Unit {
   owner_phone: string | null;
   owner_name: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export interface Lead {

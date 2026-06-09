@@ -56,6 +56,7 @@ import { labelKey } from '../../shared/status-label';
             <th>{{ 'brokerClients.assignedTo' | t }}</th>
             <th>{{ 'brokerClients.clientRecommendations' | t }}</th>
             <th>{{ 'common.createdAt' | t }}</th>
+            <th>{{ 'common.updatedAt' | t }}</th>
             <th>{{ 'common.actions' | t }}</th>
           </tr>
         </thead>
@@ -69,6 +70,7 @@ import { labelKey } from '../../shared/status-label';
               <td>{{ client.assignee?.full_name ?? ('common.unassigned' | t) }}</td>
               <td>{{ client.client_recommendations ?? ('common.none' | t) }}</td>
               <td>{{ client.created_at | date:'short' }}</td>
+              <td>{{ client.updated_at | date:'short' }}</td>
               <td>
                 <div class="table-actions">
                   <button class="icon-button table-action" type="button" (click)="startEdit(client)" [attr.aria-label]="'common.edit' | t">✎</button>
@@ -77,7 +79,7 @@ import { labelKey } from '../../shared/status-label';
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="8" class="empty">{{ 'common.empty' | t }}</td></tr>
+            <tr><td colspan="9" class="empty">{{ 'common.empty' | t }}</td></tr>
           }
         </tbody>
       </table>

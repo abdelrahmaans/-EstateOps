@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { BuildingCategory, DeliveryStatus, FinishingStatus, NileSide, PaymentPlan, Unit, UnitDistrict, UnitStatus, UnitType } from './models';
 import { SupabaseService } from './supabase.service';
 
-export type UnitPayload = Omit<Unit, 'id' | 'created_at' | 'project' | 'code'> & { code?: string | null };
+export type UnitPayload = Omit<Unit, 'id' | 'created_at' | 'updated_at' | 'project' | 'code'> & { code?: string | null };
 
 export interface UnitFilters {
   projectId?: string;

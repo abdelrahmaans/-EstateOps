@@ -14,13 +14,14 @@ import { labelKey } from '../../shared/status-label';
   template: `
     <section class="page-header"><div><p class="eyebrow">{{ 'projects.eyebrow' | t }}</p><h2>{{ 'projects.title' | t }}</h2></div><button class="button primary" type="button" (click)="startCreate()">{{ 'projects.add' | t }}</button></section>
     @if (error()) { <p class="state error" role="alert">{{ error() }}</p> }
-    <div class="table-wrap"><table><thead><tr><th>{{ 'projects.name' | t }}</th><th>{{ 'projects.location' | t }}</th><th>{{ 'projects.status' | t }}</th><th>{{ 'common.createdAt' | t }}</th><th>{{ 'common.actions' | t }}</th></tr></thead><tbody>
+    <div class="table-wrap"><table><thead><tr><th>{{ 'projects.name' | t }}</th><th>{{ 'projects.location' | t }}</th><th>{{ 'projects.status' | t }}</th><th>{{ 'common.createdAt' | t }}</th><th>{{ 'common.updatedAt' | t }}</th><th>{{ 'common.actions' | t }}</th></tr></thead><tbody>
       @for (project of projects(); track project.id) {
         <tr>
           <td>{{ project.name }}</td>
           <td>{{ project.location }}</td>
           <td><span class="badge">{{ statusKey(project.status) | t }}</span></td>
           <td>{{ project.created_at | date:'short' }}</td>
+          <td>{{ project.updated_at | date:'short' }}</td>
           <td>
             <div class="table-actions">
               <button class="icon-button table-action" type="button" (click)="startEdit(project)" [attr.aria-label]="'common.edit' | t">✎</button>
@@ -28,7 +29,7 @@ import { labelKey } from '../../shared/status-label';
             </div>
           </td>
         </tr>
-      } @empty { <tr><td colspan="5" class="empty">{{ 'common.empty' | t }}</td></tr> }
+      } @empty { <tr><td colspan="6" class="empty">{{ 'common.empty' | t }}</td></tr> }
     </tbody></table></div>
     @if (editing()) {
       <section class="drawer" role="dialog" aria-modal="true"><form class="form-grid" [formGroup]="form" (ngSubmit)="save()">
