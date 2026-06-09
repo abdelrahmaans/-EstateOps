@@ -113,6 +113,8 @@ export interface Task {
   description: string | null;
   assigned_to: string | null;
   assignee?: Pick<Profile, 'full_name'> | null;
+  created_by: string | null;
+  creator?: Pick<Profile, 'full_name'> | null;
   related_lead_id: string | null;
   lead?: Pick<Lead, 'name'> | null;
   due_date: string | null;

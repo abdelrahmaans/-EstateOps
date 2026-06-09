@@ -107,6 +107,7 @@ create table tasks (
   title text not null,
   description text,
   assigned_to uuid references profiles(id) on delete set null,
+  created_by uuid references profiles(id) on delete set null,
   related_lead_id uuid references leads(id) on delete set null,
   due_date date,
   priority task_priority not null default 'medium',
@@ -125,6 +126,7 @@ create index broker_clients_status_idx on broker_clients(status);
 create index broker_clients_assigned_to_idx on broker_clients(assigned_to);
 create index broker_clients_phone_idx on broker_clients(phone);
 create index tasks_assigned_to_idx on tasks(assigned_to);
+create index tasks_created_by_idx on tasks(created_by);
 create index tasks_due_date_idx on tasks(due_date);
 create index units_project_id_idx on units(project_id);
 create index units_status_idx on units(status);

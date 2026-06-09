@@ -263,14 +263,15 @@ insert into lead_activities (id, lead_id, type, note, created_by) values
   ('30000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000003', 'meeting', 'Site visit scheduled with family.', '00000000-0000-0000-0000-000000000003')
 on conflict (id) do nothing;
 
-insert into tasks (id, title, description, assigned_to, related_lead_id, due_date, priority, status) values
-  ('40000000-0000-0000-0000-000000000001', 'Send payment plan', 'Prepare North Gate 3-bedroom plan.', '00000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000001', current_date, 'high', 'pending'),
-  ('40000000-0000-0000-0000-000000000002', 'Confirm site visit', 'Call client to confirm arrival time.', '00000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000003', current_date - 1, 'medium', 'in_progress'),
-  ('40000000-0000-0000-0000-000000000003', 'Update unit availability', 'Review reserved inventory with sales manager.', '00000000-0000-0000-0000-000000000002', null, current_date + 3, 'low', 'pending')
+insert into tasks (id, title, description, assigned_to, created_by, related_lead_id, due_date, priority, status) values
+  ('40000000-0000-0000-0000-000000000001', 'Send payment plan', 'Prepare North Gate 3-bedroom plan.', '00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000001', current_date, 'high', 'pending'),
+  ('40000000-0000-0000-0000-000000000002', 'Confirm site visit', 'Call client to confirm arrival time.', '00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000003', current_date - 1, 'medium', 'in_progress'),
+  ('40000000-0000-0000-0000-000000000003', 'Update unit availability', 'Review reserved inventory with sales manager.', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', null, current_date + 3, 'low', 'pending')
 on conflict (id) do update set
   title = excluded.title,
   description = excluded.description,
   assigned_to = excluded.assigned_to,
+  created_by = excluded.created_by,
   related_lead_id = excluded.related_lead_id,
   due_date = excluded.due_date,
   priority = excluded.priority,
