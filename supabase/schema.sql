@@ -178,7 +178,7 @@ alter table tasks enable row level security;
 create policy "profiles read self or management"
 on profiles for select
 to authenticated
-using (id = auth.uid() or is_admin_or_manager());
+using (true);
 
 create policy "profiles management write"
 on profiles for all
@@ -192,10 +192,20 @@ to authenticated
 using (true);
 
 create policy "projects management write"
-on projects for all
+on projects for insert
 to authenticated
-using (is_admin_or_manager())
-with check (is_admin_or_manager());
+with check (auth.uid() is not null);
+
+create policy "projects authenticated update"
+on projects for update
+to authenticated
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
+
+create policy "projects authenticated delete"
+on projects for delete
+to authenticated
+using (auth.uid() is not null);
 
 create policy "units all authenticated read"
 on units for select
@@ -203,99 +213,72 @@ to authenticated
 using (true);
 
 create policy "units management write"
-on units for all
+on units for insert
 to authenticated
-using (is_admin_or_manager())
-with check (is_admin_or_manager());
+with check (auth.uid() is not null);
+
+create policy "units authenticated update"
+on units for update
+to authenticated
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
+
+create policy "units authenticated delete"
+on units for delete
+to authenticated
+using (auth.uid() is not null);
 
 create policy "leads role based read"
 on leads for select
 to authenticated
-using (
-  current_user_role() in ('admin', 'manager', 'secretary')
-  or assigned_to = auth.uid()
-);
+using (true);
 
 create policy "leads secretary and management insert"
 on leads for insert
 to authenticated
-with check (current_user_role() in ('admin', 'manager', 'secretary'));
+with check (auth.uid() is not null);
 
 create policy "leads role based update"
 on leads for update
 to authenticated
-using (
-  current_user_role() in ('admin', 'manager', 'secretary')
-  or assigned_to = auth.uid()
-)
-with check (
-  current_user_role() in ('admin', 'manager', 'secretary')
-  or assigned_to = auth.uid()
-);
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
 
 create policy "leads management delete"
 on leads for delete
 to authenticated
-using (is_admin_or_manager());
+using (auth.uid() is not null);
 
 create policy "broker clients role based read"
 on broker_clients for select
 to authenticated
-using (
-  current_user_role() in ('admin', 'manager', 'secretary')
-  or assigned_to = auth.uid()
-);
+using (true);
 
 create policy "broker clients secretary and management insert"
 on broker_clients for insert
 to authenticated
-with check (current_user_role() in ('admin', 'manager', 'secretary'));
+with check (auth.uid() is not null);
 
 create policy "broker clients role based update"
 on broker_clients for update
 to authenticated
-using (
-  current_user_role() in ('admin', 'manager', 'secretary')
-  or assigned_to = auth.uid()
-)
-with check (
-  current_user_role() in ('admin', 'manager', 'secretary')
-  or assigned_to = auth.uid()
-);
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
 
 create policy "broker clients management delete"
 on broker_clients for delete
 to authenticated
-using (is_admin_or_manager());
+using (auth.uid() is not null);
 
 create policy "lead activities role based read"
 on lead_activities for select
 to authenticated
-using (
-  exists (
-    select 1 from leads
-    where leads.id = lead_activities.lead_id
-      and (
-        current_user_role() in ('admin', 'manager', 'secretary')
-        or leads.assigned_to = auth.uid()
-      )
-  )
-);
+using (true);
 
 create policy "lead activities role based insert"
 on lead_activities for insert
 to authenticated
-with check (
-  created_by = auth.uid()
-  and exists (
-    select 1 from leads
-    where leads.id = lead_activities.lead_id
-      and (
-        current_user_role() in ('admin', 'manager', 'secretary')
-        or leads.assigned_to = auth.uid()
-      )
-  )
-);
+with check (created_by = auth.uid());
 
 create policy "tasks role based read"
 on tasks for select

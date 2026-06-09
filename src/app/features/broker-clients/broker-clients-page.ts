@@ -192,6 +192,7 @@ export class BrokerClientsPage {
       const editing = this.editing();
       if (editing === 'new') {
         await this.brokerClientsService.create(payload);
+        this.resetFilters();
       } else if (editing) {
         await this.brokerClientsService.update(editing.id, payload);
       }
@@ -216,7 +217,7 @@ export class BrokerClientsPage {
   }
 
   protected clearFilters(): void {
-    this.filters.reset({ status: '', assignedTo: '', phone: '' });
+    this.resetFilters();
     void this.load();
   }
 
@@ -230,5 +231,9 @@ export class BrokerClientsPage {
 
   private async loadSupport(): Promise<void> {
     this.users.set(await this.usersService.list());
+  }
+
+  private resetFilters(): void {
+    this.filters.reset({ status: '', assignedTo: '', phone: '' }, { emitEvent: false });
   }
 }

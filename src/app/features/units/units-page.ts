@@ -315,6 +315,7 @@ export class UnitsPage {
       const editing = this.editing();
       if (editing === 'new') {
         await this.service.create(payload);
+        this.resetFilters();
       } else if (editing) {
         await this.service.update(editing.id, payload);
       }
@@ -339,22 +340,7 @@ export class UnitsPage {
   }
 
   protected clearFilters(): void {
-    this.filters.reset({
-      projectId: '',
-      status: '',
-      type: '',
-      buildingCategory: '',
-      deliveryStatus: '',
-      nileSide: '',
-      district: '',
-      hasElevator: '',
-      finishing: '',
-      paymentPlan: '',
-      minPrice: 0,
-      maxPrice: 0,
-      minArea: 0,
-      maxArea: 0,
-    });
+    this.resetFilters();
     void this.load();
   }
 
@@ -396,5 +382,24 @@ export class UnitsPage {
 
   private async loadSupport(): Promise<void> {
     this.projects.set(await this.projectsService.list());
+  }
+
+  private resetFilters(): void {
+    this.filters.reset({
+      projectId: '',
+      status: '',
+      type: '',
+      buildingCategory: '',
+      deliveryStatus: '',
+      nileSide: '',
+      district: '',
+      hasElevator: '',
+      finishing: '',
+      paymentPlan: '',
+      minPrice: 0,
+      maxPrice: 0,
+      minArea: 0,
+      maxArea: 0,
+    }, { emitEvent: false });
   }
 }

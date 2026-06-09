@@ -224,6 +224,7 @@ export class LeadsList {
       const editing = this.editing();
       if (editing === 'new') {
         await this.leadsService.create(payload);
+        this.resetFilters();
       } else if (editing) {
         await this.leadsService.update(editing.id, payload);
       }
@@ -248,14 +249,7 @@ export class LeadsList {
   }
 
   protected clearFilters(): void {
-    this.filters.reset({
-      source: '',
-      desiredNileSide: '',
-      buyerPurpose: '',
-      paymentPlan: '',
-      minDesiredArea: 0,
-      maxDesiredArea: 0,
-    });
+    this.resetFilters();
     void this.load();
   }
 
@@ -267,4 +261,15 @@ export class LeadsList {
   protected sideKey(side: string | null): string { return labelKey('nileSides', side); }
   protected purposeKey(purpose: string | null): string { return labelKey('buyerPurposes', purpose); }
   protected paymentKey(plan: string | null): string { return labelKey('paymentPlans', plan); }
+
+  private resetFilters(): void {
+    this.filters.reset({
+      source: '',
+      desiredNileSide: '',
+      buyerPurpose: '',
+      paymentPlan: '',
+      minDesiredArea: 0,
+      maxDesiredArea: 0,
+    }, { emitEvent: false });
+  }
 }

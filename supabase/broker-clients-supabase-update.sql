@@ -76,35 +76,30 @@ end $$;
 alter table broker_clients enable row level security;
 
 drop policy if exists "broker clients role based read" on broker_clients;
+drop policy if exists "broker clients authenticated read" on broker_clients;
 create policy "broker clients role based read"
 on broker_clients for select
 to authenticated
-using (
-  current_user_role() in ('admin', 'manager', 'secretary')
-  or assigned_to = auth.uid()
-);
+using (true);
 
 drop policy if exists "broker clients secretary and management insert" on broker_clients;
+drop policy if exists "broker clients authenticated insert" on broker_clients;
 create policy "broker clients secretary and management insert"
 on broker_clients for insert
 to authenticated
-with check (current_user_role() in ('admin', 'manager', 'secretary'));
+with check (auth.uid() is not null);
 
 drop policy if exists "broker clients role based update" on broker_clients;
+drop policy if exists "broker clients authenticated update" on broker_clients;
 create policy "broker clients role based update"
 on broker_clients for update
 to authenticated
-using (
-  current_user_role() in ('admin', 'manager', 'secretary')
-  or assigned_to = auth.uid()
-)
-with check (
-  current_user_role() in ('admin', 'manager', 'secretary')
-  or assigned_to = auth.uid()
-);
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
 
 drop policy if exists "broker clients management delete" on broker_clients;
+drop policy if exists "broker clients authenticated delete" on broker_clients;
 create policy "broker clients management delete"
 on broker_clients for delete
 to authenticated
-using (is_admin_or_manager());
+using (auth.uid() is not null);
